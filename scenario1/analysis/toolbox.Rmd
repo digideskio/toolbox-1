@@ -36,17 +36,21 @@ theme_set(theme_minimal() +
 
 ### [Matti Vuorre](mailto:mv2521@columbia.edu)
 
-Many introductory statistics and research methods courses in psychology teach a very general workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create plots (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
+Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
 
-Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, there are better alternatives to it. In this post, I propose that this Excel -> SPSS (repeated ad nauseam with slight tweaks that require many a buttons to be repeatedly clicked) workflow can be greatly improved by changing to a _data scientist's toolbox_.
+Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -> SPSS (repeated _ad nauseam_ with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language, with its stellar repertoire of user-contributed packages to perfrom various data "wrangling" and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see [this post](http://r4stats.com/articles/popularity/).
 
-Because the initial data "wrangling" often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.
+Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.
+
+Because my goal is to introduce R to _practitioners_ of statistical analyses, I will not cover the basics of R in a conventional sense, where we create vectors of numbers and multiply them by 1, but instead we focus on multiple __"scenarios"__ that practicing psychologists may encounter. Through these scenarios, we become familiar with _awesome_ tools that are applicable in any domain, and the switch from an example scenario to the one you are facing right now requires only a slight rethinking in data organization and variable names. 
 
 # Before we get started...
 
 Programming is hard. You learn it by doing it. I recommend you follow the examples here by typing them into your own R script files, and execute them on your own computer. No prior knowledge of R or programming in general is required, but I will not explain, for example, how to create folders on your computer. 
 
-I rely heavily on amazing user-contributed packages to the R programming language, but many people still hold to the maxim that "unnecessary abstraction" is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R.  I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing an amazing set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Although many professionals rely on base-R, that doesn't mean that you have to.
+I rely heavily on user-contributed packages to the R programming language, but many people still hold to the maxim that "unnecessary abstraction" is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R. I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing a set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Note that I do not claim that base-R doesn't do its job, it does it brilliantly, in fact, but we can learn much faster, and generalize the skills much easier by using additional packages, and that is my goal.
+
+We will dive right into our first scenario: Questionnaire data
 
 # Scenario 1: Personality Questionnaire Data
 
@@ -83,7 +87,7 @@ toolbox/
 
 ### Download the data
 
-This data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip). Go ahead and download the .zip file, and unzip it into your data directory. 
+This data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip)[^1]. Go ahead and download the .zip file, and unzip it into your data directory. 
 
 ### Open RStudio
 
@@ -109,24 +113,23 @@ We are now ready to begin...
 
 ### Load the data
 
-We downloaded a _tab-separated_ spreadsheet of data, meaning that each column in the data-set is separated by a tab. I encounter _comma-separated_ tables more often, but the separator doesn't matter! It's just good to know what your source is. 
-
-Let's enter the first line of code to our script: Load the data. As I alluded to above, by knowing your source, you know right away which tool to grab. Here, we will use the `read_tsv` function (=tool) from the `readr` package.
+We downloaded a _tab-separated_ spreadsheet of data, meaning that each column in the data-set is separated by a tab. I encounter _comma-separated_ tables more often, but the separator doesn't matter! It's just good to know what your source is. Let's enter the first line of code to our script: Load the data. As I alluded to above, by knowing your source, you know right away which tool to grab. Here, we will use the `read_tsv` function (=tool) from the `readr` package.
 
 ```{r}
 library(readr)  # Loads the readr package
 d <- read_tsv("../data/data.csv")
 d <- na.omit(d)  # Remove all missing values
-d
 ```
 
 For an explanation of the `"../data/data.csv"` argument to the function, refer to the folder structure defined above. We only need to tell `read_tsv()` where the file is, and it takes care of the rest. Because we are operating in `toolbox/analysis/` we need to refer one folder down in the hierarchy (`"../"`) and then one up to `"data/"` to access `data.csv`. Do __not__ set working directories in your script, because these calls make others with different root folder structures (usernames, systems, etc.) unable to run your script without changing these arguments.
 
+We also removed the missing data right away (not many lines), and accept that this is an advanced topic. 
+
 ### Get to know the data
 
-Usually at this stage you would probably already know quite a bit about the data, if you collected it yourself. Here we get familiar with the data for this example: The data consist of responses to the Big Five personality questionnaire, and we have indicator variables for countries, ages, sex, race, etc... Plenty to explore!
+Usually at this stage you would probably already know quite a bit about the data, if you collected it yourself. Here we get familiar with the data for this example: The data consist of responses to the Big Five personality questionnaire, and we have indicator variables for the country, age, sex, race, etc. of the respondent. Plenty to explore!
 
->This data was collected (c. 2012) through on interactive online personality test. Participants were informed that their responses would be recorded and used for research at the begining of the test and asked to confirm their consent at the end of the test.
+>This data was collected (c. 2012) through on interactive online personality test. Participants were informed that their responses would be recorded and used for research at the begining of the test and asked to confirm their consent at the end of the test.[^1]
 
 The structure of the data is as follows:
 
@@ -134,7 +137,7 @@ The structure of the data is as follows:
 d  # We can inspect the data_frame by simply calling our object d
 ```
 
-We have a `data_frame` named `d` that contains 19719 observations on 57 variables: Each variable is contained in a column, with the top entry (`race`, `age`, ...) giving names to the variables. Under the name in parenthesis, we see the data type of each variable: integers and characters. 
+We have a `data_frame` named `d` that contains 19710 observations on 57 variables: Each variable is contained in a column, with the top entry (`race`, `age`, ...) giving names to the variables. Under the name in parenthesis, we see the data type of each variable: integers and characters. 
 
 <small>__Note to readers who already use R__: A data_frame is slightly different, but arguably better, than the base-R data.frame. For instance, note how the object printed in the console: We see each variable and its associated data type, and additional lines are automatically clipped. We can, however, conceptually treat it as a data.frame for almost any application.</small>
 
@@ -205,7 +208,7 @@ Later, we will be repeatedly calling `mutate()` with different functions inside 
 
 ### Summary of section 1.1
 
-We entered our toolshed (RStudio) and prepared our workspace. We then learned about `readr` for reading data, and `dplyr` (particularly its `mutate()` function). By using these tools, we wrangled our data a little bit: We moved from a non-human readable data file to something that looks interpretable by a human. In the next section, we will take `dplyr` to its proper use and group and summarise the data in various ways.
+We entered our toolshed (RStudio) and prepared our workspace. We then learned about `readr` for reading data, and `dplyr` (particularly its `mutate()` function.) By using these tools, we wrangled our data a little bit: We moved from a non-human readable data file to something that looks interpretable by a human. In the next section, we will take `dplyr` to its proper use and group and summarise the data in various ways.
 
 ## Intermission
 
@@ -273,11 +276,15 @@ l <- mutate(d,
            geom_segment(aes(x = country, xend = country,
                             y = min(value), yend = value),
                         size=.3) +
+           geom_point(data = filter(., country == "Denmark"),
+                      size = 3.1, shape = 1, col = "red") +
+           geom_point(data = filter(., country == "Denmark"),
+                      size = 2, shape = 3, col = "red") +
            labs(title = .$Item,
                 x = "",
                 y = "Mean rating") +
            coord_flip())
-plot_args <- c(l$plots, nrow=2)
+plot_args <- c(l$plots, nrow=2, top="Distributions of Four of the Big Five categories across various countries")
 do.call(grid.arrange, plot_args)
 # ggplot(aes(x = reorder(country, value, mean), y = value)) +
 #     geom_point() +
@@ -285,7 +292,7 @@ do.call(grid.arrange, plot_args)
 #     facet_wrap(~Item)
 ```
 
-These figures took me about 10 minutes to make. But if I want to change something in them (aesthetics, grouping variables, exclude or include more data, manipulations...), it will take me about 20 seconds and the plots are redrawn with the desired changes. Do that in SPSS or Excel! And this is the point, we want to be able to _quickly_ investigate our data from multiple angles. We'll learn just this in the next section.
+Look at those Danes, with their high openness and low neuroticism... These figures took me about 10 minutes to make. But if I want to change something in them (aesthetics, grouping variables, exclude or include more data, manipulations...), it will take me about 20 seconds and the plots are redrawn with the desired changes. Do that in SPSS or Excel! And this is the point, we want to be able to _quickly_ investigate our data from multiple angles. We'll learn just that in the next section.
 
 ## Section 1.2
 
@@ -367,9 +374,11 @@ d %>%
     facet_wrap(~Item)
 ```
 
+Great! We let the plotting function `ggplot()` automatically take care of some of the subsetting we wanted to do. This is an extremely powerful feature of `ggplot()` and will feature heavily in the section dedicated to `ggplot()`. For now, we want to keep using `dplyr` verbs to subset our data. 
 
+### Subsets and filters
 
-Don't worry about the details of this command right now, but appreciate that it is rather readable: select variables in `d` that start with either of the capital letters specified below. The negation before each line says that these should, in fact, be negatively selected (i.e. dropped.)
+Our first operation will be to subset our data frame `d` by removing all the raw questionnaire items. We subset data frames by using the `select()` command.
 
 ```{r}
 d <- select(d, 
@@ -381,5 +390,6 @@ d <- select(d,
 d
 ```
 
+Don't worry about the details of this command right now, but appreciate that it is rather readable: select variables in `d` that start with either of the capital letters specified below. The negation before each line says that these should, in fact, be negatively selected (i.e. dropped.)
 
-
+[^1]: <http://personality-testing.info/_rawdata/>
