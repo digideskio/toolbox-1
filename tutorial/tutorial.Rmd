@@ -1,0 +1,466 @@
+---
+title: "Toolbox"
+author: "Matti Vuorre"
+date: "`r Sys.Date()`"
+output:
+  knitrBootstrap::bootstrap_document:
+    theme: simplex
+    highlight: tomorrow night bright
+    theme.chooser: true
+    highlight.chooser: TRUE
+    menu: true
+bibliography: tutorial.bib
+---
+
+```{r, echo=F, warning=FALSE, message=FALSE}
+# Document information:
+# Created with knitrBootsrap (https://github.com/jimhester/knitrBootstrap)
+# install_github('jimhester/knitrBootstrap')
+library(knitr)
+library(gridExtra)
+library(countrycode)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(reshape2)
+opts_chunk$set(fig.retina = 2,
+               fig.align = 'center',
+               comment = "#",
+               warning = F,
+               message = F,
+               fig.width=8,
+               cache = T,
+               bootstrap.thumbnail.size = 'col-md-6',
+               bootstrap.panel = FALSE)
+# options(digits = 2)
+theme_set(
+    theme_minimal() + 
+        theme(panel.grid.minor = element_blank(),
+              legend.position = "bottom"))
+```
+
+# The psychologist's data toolbox 2.0
+
+### [Matti Vuorre](mailto:mv2521@columbia.edu)
+
+Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
+
+Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -> SPSS (repeated _ad nauseam_ with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language [@r_core_team_r:_2015], with its stellar repertoire of user-contributed packages to perfrom various data "wrangling" and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see [this post](http://r4stats.com/articles/popularity/).
+
+Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.
+
+Because my goal is to introduce R to _practitioners_ of statistical analyses, I will not cover the basics of R in a conventional sense, where we create vectors of numbers and multiply them by 1, but instead we focus on multiple __"scenarios"__ that practicing psychologists may encounter. Through these scenarios, we become familiar with _awesome_ tools that are applicable in any domain, and the switch from an example scenario to the one you are facing right now requires only a slight rethinking in data organization and variable names. 
+
+# Before we get started...
+
+Programming is hard. You learn it by doing it. I recommend you follow the examples here by typing them into your own R script files, and execute them on your own computer. No prior knowledge of R or programming in general is required, but I will not explain, for example, how to create folders on your computer. 
+
+I rely heavily on user-contributed packages to the R programming language, but many people still hold to the maxim that "unnecessary abstraction" is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R. I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing a set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Note that I do not claim that base-R doesn't do its job, it does it brilliantly, in fact, but we can learn much faster, and generalize the skills much easier by using additional packages, and that is my goal.
+
+We will dive right into our first scenario: Questionnaire data
+
+# Scenario 1: Personality Questionnaire Data
+
+## Section 1.1
+
+In the first part of this scenario, we'll download an open personality questionnaire data set, and learn to 
+
+* [organize a programming project](#Project_organization)
+* [get started with RStudio](#Open_RStudio)
+* [install R packages](#Install_packages)
+* [load data with RStudio](#Load_the_data)
+    * New tool: The `read_` family of functions
+* [look at the data](#Get_to_know_the_data)
+* [recode variables](#Recode_variables)
+    * New tool: `mutate()`
+
+As a bonus, we will immediately start learning good programming practices by making our code (and data) __human-readable__.
+
+Our goal is to produce analyses that we can re-run with minimum effort. The first step toward this goal is to create and maintain a clear organization for our materials. Therefore, we'll spend the first 3 minutes reflecting on how the project should be organized.
+
+### Project organization
+
+A typical project consists of source data files, analysis script(s), and output files, such as figures, tables, and possibly manuscripts. Realizing that these basic components need to be stored in an understandable and accessible manner, we create a __folder structure__ accordingly:
+
+```
+toolbox/
+|-- scenario1/
+|    |-- data/
+|        |-- data.csv
+|    |-- analysis/
+|    |-- output/
+```
+<This is not the only "correct" structure, but something that makes sense to me and is easy to explain to others. By all means use one that suits your needs better.>
+
+### Download the data
+
+This data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip). Go ahead and download the .zip file, and unzip it into your data directory. 
+
+### Open RStudio
+
+Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to ```toolbox/analysis/``` and set it as your working directory:
+
+<img src="setwd.png", height=200px>
+
+Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.
+
+<img src="newfile.png", height=200px>
+
+### Install packages
+
+As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:
+
+```{r, eval = F}
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("reshape2")
+```
+
+These commands only need to be entered once. We are now ready to begin...
+
+### Load the data
+
+We downloaded a _tab-separated_ spreadsheet of data, meaning that each column in the data-set is separated by a tab. I encounter _comma-separated_ tables more often, but the separator doesn't matter! It's just good to know what your source is. Let's enter the first line of code to our script: Load the data. As I alluded to above, by knowing your source, you know right away which tool to grab. Here, we will use the `read_tsv` function (=tool) from the `readr` package.
+
+```{r, eval = F}
+library(readr)  # Loads the readr package into the current workspace
+d <- read_tsv("../data/data.csv")
+d <- na.omit(d)  # Remove all missing values
+```
+
+```{r echo = F}
+# File structure for tutorial slightly different than user tutorial
+d <- readr::read_tsv("../scenario1/data/data.csv") %>%
+    na.omit(.)
+```
+For an explanation of the `"../data/data.csv"` argument to the function, refer to the folder structure defined above. We only need to tell `read_tsv()` where the file is, and it takes care of the rest. Because we are operating in `toolbox/analysis/` we need to refer one folder down in the hierarchy (`"../"`) and then one up to `"data/"` to access `data.csv`. Do __not__ set working directories in your script, because these calls make others with different root folder structures (usernames, systems, etc.) unable to run your script without changing these arguments.
+
+We also removed the missing data right away (not many lines), and accept that this is an advanced topic. 
+
+### Get to know the data
+
+Usually at this stage you would probably already know quite a bit about the data, if you collected it yourself. Here we get familiar with the data for this example: The data consist of responses to the Big Five personality questionnaire, and we have indicator variables for the country, age, sex, race, etc. of the respondent. Plenty to explore!
+
+>This data was collected (c. 2012) through on interactive online personality test. Participants were informed that their responses would be recorded and used for research at the begining of the test and asked to confirm their consent at the end of the test.
+
+The structure of the data is as follows:
+
+```{r}
+d  # We can inspect the data_frame by simply calling our object d
+```
+
+We have a `data_frame` named `d` that contains 19710 observations on 57 variables: Each variable is contained in a column, with the top entry (`race`, `age`, ...) giving names to the variables. Under the name in parenthesis, we see the data type of each variable: integers and characters. 
+
+<small>__Note to readers who already use R__: A data_frame is slightly different, but arguably better, than the base-R data.frame. For instance, note how the object printed in the console: We see each variable and its associated data type, and additional lines are automatically clipped. We can, however, conceptually treat it as a data.frame for almost any application.</small>
+
+### Recode variables
+
+Here we encounter the first of many perils of not organizing and curating your materials well: Although we know what race means (maybe?), the numbers don't make any sense. What is race 13? The authors of course have provided a codebook (it's now in your `toolbox/data/` folder), but such an external file requires us to switch back and forth between files to understand our data, and I strongly recommend writing __human-readable__ variable names and code so that we don't need to go back and forth between the data and its related codebook. The first step, therefore, is to make the data as close to human-readable as possible. 
+
+For this task, we'll pick up another tool: the `mutate()` function in the `dplyr` package [@wickham_dplyr:_2015]. 
+
+The following code takes `d` and converts `race`, `engnat`, `gender`, and `hand` into more readable __factors__. Factors are R's way of attaching verbal labels to numerical data, and are the suitable data format for these variables. 
+
+```{r}
+library(dplyr)
+d <- mutate(
+    d, 
+    # Change race into a factor with the following verbal labels
+    race = factor(race, 
+                  labels = c("no_response", 
+                             "mixed_race",
+                             "arctic",
+                             "caucasian_european",
+                             "caucasian_indian",
+                             "caucasian_middle_east",
+                             "caucasian_n_africa_other",
+                             "indigenous_australian",
+                             "native_american",
+                             "north_east_asian",
+                             "pacific",
+                             "south_east_asian",
+                             "west_african",
+                             "other")),
+    # Ditto for English as native language
+    engnat = factor(engnat,
+                    labels = c("no_response", "yes", "no")),
+    # ...Gender...
+    gender = factor(gender,
+                    labels = c("no_response", "male", "female", "other")),
+    # ...And handedness
+    hand = factor(hand,
+                  labels = c("no_response", "right", "left", "both"))
+)
+```
+
+Before we view the output, let's reflect on what we just did. We took `d` and passed it as the first argument to `mutate()`. `mutate()` is a powerful function from the `dplyr` package that takes a data frame as input, and creates new variables within that data frame. We overwrote the original variables by calls to `factor()`, that simply converts the old variable, for example `race`, by a new one that took the numerical values of `race` and attached them with verbal labels. 
+
+Let's see what we ended up with: 
+
+```{r} 
+d
+```
+
+Much better! Now we can immediately see meaningful values of race, gender, etc.
+
+### Basic summaries
+
+There are a few basic commands that are well worth knowing. `table()` provides counts of observations for a given variable. To get a single variable (column) from our data frame, we use the `$` operator:
+
+```{r}
+table(d$race)
+```
+
+`table()` can also be applied on many variables, to obtain n-dimensional tables of counts. Anything above two dimensions will be hard to see, but two dimensions can be very informative:
+
+```{r}
+table(d$race, d$engnat)
+```
+
+The rows of this table display information for each race, and the separate columns are counts for each "english as a native language" category. It looks like we have a pretty English-centric sample, but unsurprisingly some race-categories are more English-centric than others. To obtain proportions, instead of counts, the `prop.table()` function is useful:
+
+```{r}
+prop.table(table(d$race, d$engnat), margin = 1)
+```
+
+We fed the `engnat`-by`race` table to `prop.table()`, and specified that we want proportions on the first margin. R treats two-dimensional data first by row, second by column. That's why, whenever you want to specify if you'd like to operate on rows or columns, remember that one means row, and two means column. 
+
+### Summary of section 1.1
+
+We entered our toolshed (RStudio) and prepared our workspace. We then learned about `readr` for reading data, and `dplyr` (particularly its `mutate()` function.) By using these tools, we wrangled our data a little bit: We moved from a non-human readable data file to something that looks interpretable by a human. We also obtained tabular summaries, which are useful for counts and proportions of categorical data.  In the next section, we will take `dplyr` to its proper use and group and summarise the data in more flexible ways.
+
+## Intermission
+
+This is taking a while! Are you still following? Let's take a step back and think about what the goal here is: We want to understand the data in front of us. In order to accomplish this, we must know how to effectively wrangle the data; to group it in various ways, to aggregate it at multiple levels of different grouping factors. We want to be able to quickly draw figures like the one I'll show below:
+
+```{r figure2, echo=F, bootstrap.thumbnail.size = 'col-sm-4', fig.cap="TEST"}
+l <- mutate(d, 
+       extraversion = (E1+E2+E3+E5+E6+E7+E8+E9+E10)/10,
+       neuroticism = (N1+N2+N3+N5+N6+N7+N8+N9+N10)/10,
+       agreeableness = (A1+A2+A3+A5+A6+A7+A8+A9+A10)/10,
+       conscientiousness = (C1+C2+C3+C5+C6+C7+C8+C9+C10)/10,
+       openness = (O1+O2+O3+O5+O6+O7+O8+O9+O10)/10) %>%
+    select(-c(E1:O10)) %>%
+    filter(between(age, 13, 70),
+           country != "(nu") %>%
+    mutate(country = countrycode(country,
+                                 origin = "iso2c", 
+                                 destination = "country.name")) %>%
+    group_by(country) %>%
+    mutate(n = n()) %>%
+    filter(n >= 89) %>%
+    summarise(extraversion = mean(extraversion),
+              neuroticism = mean(neuroticism),
+              agreeableness = mean(agreeableness),
+              # conscientiousness = mean(conscientiousness),
+              openness = mean(openness)) %>%
+    melt(id.vars = "country", variable.name = "Item") %>%
+    group_by(Item) %>%
+    do(plots = ggplot(data = ., 
+                      aes(x=reorder(country, value, mean), 
+                          y = value)) + 
+           geom_point() +
+           geom_segment(aes(x = country, xend = country,
+                            y = min(value), yend = value),
+                        size=.3) +
+           geom_point(data = filter(., country == "Denmark"),
+                      size = 3.1, shape = 1, col = "red") +
+           geom_point(data = filter(., country == "Denmark"),
+                      size = 2, shape = 3, col = "red") +
+           labs(title = .$Item,
+                x = "",
+                y = "Mean rating") +
+           coord_flip())
+plot_args <- c(l$plots, nrow=2, top="Distributions of Four of the Big Five categories across various countries")
+do.call(grid.arrange, plot_args)
+# ggplot(aes(x = reorder(country, value, mean), y = value)) +
+#     geom_point() +
+#     coord_flip() +
+#     facet_wrap(~Item)
+```
+
+Look at those Danes, with their high openness and low neuroticism... This figure took me about 10 minutes to make. But if I want to change something in it (aesthetics, grouping variables, exclude or include more data, manipulations...), it will take me about 20 seconds and the plot is redrawn with the desired changes. Do that in SPSS or Excel! And this is the point, we want to be able to _quickly_ investigate our data from multiple angles. We'll learn just that in the next section.
+
+## Section 1.2
+
+We now have an understandable data frame in R, and we can begin investigating it. In this section we'll
+
+* summarise variables
+    * new tools: `range()` and `summarise()`
+* summarise variables at various levels of other variables
+    * new tool: `group_by()`
+    * bonus round: the pipe `%>%`
+* summarise variables row-wise
+* draw our first plot
+    * new tool: `ggplot()`
+* subset and filter the data
+    * new tools: `select()` and `filter()`
+    
+There will be a lot of material here, but you can take as long as you wish. If at this stage you haven't done so, I strongly recommend following along by writing the commands to your own R script, and executing them on your own computer.
+
+### Summarise variables
+
+Previously, we summarised categorical variables by looking at their counts using `table()` and `prop.table()`. Next, we'll learn how to summarise continuous data using `range()`, and then take multiple ranges at once using `summarise()`.
+
+To get the range of one continuous variable, we can use R's built-in function `range()`:
+
+```{r}
+range(d$age)
+```
+
+And we get two numbers, the lower limit, 13, and the upper limit, 999999999! We clearly have some work to do to clean this data. This result highlights an important point about data analysis: Although the raw data is the most accurate representation of itself (duh), it is not necessarily the most accurate representation of reality. Respondents might very well type 99999999 in the age field, but we doubt the validity of that response. Therefore, we understand that one over-arching goal of initial data-wrangling is to clean the data from clearly inaccurate values. It would be a mistake to start drawing conclusions from the raw data without first inspecting it; here we are learning precisely how to effectively accomplish this task.
+
+Before we get to filtering bad values, and selecting variables of interest, let's familiare ourselves with `summarise()`, `dplyr`'s function for obtaining various summaries from a data frame. We will compute means for the extraversion items:
+
+```{r}
+summarise(d,
+          mE1 = mean(E1),
+          mE2 = mean(E2),
+          mE3 = mean(E3))
+```
+
+Notice, again, that we can evaluate many functions on our data frame without naming it each time a variable is called. Because `summarise()` takes a data frame as input, and then operates on its variables, I prefer using it instead of typing out the commands required by base-R functions:
+
+```{r}
+c(
+    mE1 = mean(d$E1),
+    mE2 = mean(d$E2),
+    mE3 = mean(d$E3)
+)
+```
+
+Furthermore, `summarise()` takes as input a data frame, and outputs a data frame. This will become very important later on. Another unfortunate consequence not using `summarise()` here was that I wanted to print the means in a single row of output, and therefore had to append the commands in the previous code block in a `c()` (combine) function.
+
+### Grouped summaries
+
+When we have multivariate data, such as our Big Five questionnaire responses, we can do much more than just total summaries of each of the individual variables. A common question would address the _group means_ of one or many variables. This is the first step toward interesting statements about the data: How do means of Big Five personality questions vary by age? Handedness? Language? Race?
+
+To answer these questions, we would like to group the data, and compute summaries of the output variables for each of the levels of a given grouping factor. `dplyr` provides an elegant way to do just that: Combining `summarise()` with `group_by()`.
+
+```{r}
+summarise(group_by(d, gender), mE1 = mean(E1))
+```
+
+Instead of taking `mean(E1)` as above, we first grouped our data frame `d` by `gender`, and _then_ asked for the mean of `E1`. Before continuing, I want to take a minute and reflect on the word _then_, and how R has a particularly elegant way of dealing with this verbal construction: The pipe.
+
+#### The pipe
+
+When I first encountered the pipe, I was perplexed. What is this messy looking thing on each line? `%>%`?? I quickly learned that the pipe connects commands and makes the code much more readable by humans. By appending that to the end of a line, we can pipe commands without either nesting commands, or saving intermediate output. For example, in the previous code chunk, `group_by(d, gender)` was nested inside the summarise function. Nesting functions inside each other quickly makes the code unreadable because while I like reading from left to right, I now must jump back and forth in the code to understand what it is doing. It would be much better if I could write a statement, _then_ another, _then_ yet another... As an example, consider the following:
+
+```{r}
+d %>%
+    group_by(gender) %>%
+    summarise(mE1 = mean(E1))
+```
+
+Let me read that aloud for you (Read the `%>%` as simply saying "then..."):
+
+>Take `d`, _then_ group it by gender, _then_ create the mean of E1. 
+
+Because each of these lines is evaluated before the pipe operator, the `summarise(...)` line received a grouped data frame, and computed means of E1 for each level of gender.
+
+Here is another example of grouping and summarising:
+
+```{r}
+d %>%
+    group_by(gender, hand) %>%
+    summarise(m_age = median(age),
+              n_obs = n())
+```
+
+This time, we asked for the median age for each hand and gender. Additionally, we included the number of observations for each summarised group by calling the `n()` function. Lots of right handed females!
+
+### Summarise variables row-wise
+
+This is a common scenario in questionnaire research: We are not necessarily as interested in individual items on a questionnaire, but rather in the subsets they form. We know that we have five categories of questionnaire items in the Big Five, so here we will create, for each individual respondent, mean values of each of the Big Five categories.
+
+Here's the recipe: We add another variable to the data frame called `id` that simply helps us understand that each row indicates one person, then group the data on `id` and create new variables for each of the Big Five items by mutating their means to item means.
+
+```{r}
+d <- d %>%
+    add_rownames("id") %>%
+    group_by(id) %>%
+    mutate(extraversion = mean(c(E1, E2, E3, E4, E5, E6, E7, E8, E9, E10)),
+           openness = mean(c(O1, O2, O3, O4, O5, O6, O7, O8, O9, O10)),
+           agreeableness = mean(c(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10)),
+           neuroticism = mean(c(N1, N2, N3, N4, N5, N6, N7, N8, N9, N10)),
+           conscientiousness = mean(c(C1, C2, C3, C4, C5, C6, C7, C8, C9, C10))) %>%
+    ungroup()
+```
+
+<small>There are many ways to obtain row-wise summaries, including powerful functions in base-R, but here we are learning a general workflow while producing human-readable code. I hold that `dplyr` verbs are superior in these regards.</small>
+
+Now that we've reduced our data from individual items to means of the Big Five categories, it's time to clean the data by filtering and subsetting.
+
+### Subsets and filters
+
+Let's take a moment to reflect on our data:
+
+```{r}
+d
+```
+
+We have 63 variables, but some of them are not interesting to us right now. Therefore, I would like to subset the data. 
+
+#### Subset like a pro: `select()`
+
+There is an in-built R function `subset()` that takes subsets of data, but we embrace the modular nature of `dplyr` verbs, and focus on `select()` instead. First, we would like to remove `source` and all the individual Big Five items:
+
+```{r}
+d <- select(d, 
+            -source,
+            -starts_with("E", ignore.case=F),
+            -starts_with("O", ignore.case=F),
+            -starts_with("N", ignore.case=F),
+            -starts_with("C", ignore.case=F),
+            -starts_with("A", ignore.case=F))
+d
+```
+
+`select()` takes a data frame as its first argument, followed by arbitrarily many variables in that data frame that you would like to include or exclude. Because we appended a `-` to `source`, we requested that it be excluded. The following lines are slightly more complicated, but do many tasks at once.
+
+`-starts_with("E", ignore.case=F)` says that we would like to select every variable that starts with an E, specify that case should not be ignored (because we don't want to select variables beginning with small _e_), and exclude these variables by starting the command with a negation. As a result, the printed data frame is now much cleaner to look at.
+
+#### Exclude and include cases: `filter()`
+
+Recall that we had some pretty bizarre entries in the age field (`r range(d$age)`). Therefore our next operation will be to exclude cases (rows), in which the age entry is outside some reasonable criteria, say 13 and 99.
+
+```{r}
+d <- filter(d, between(age, 13, 99))
+range(d$age)
+```
+
+Sweet! I also surreptitiously introduced you to a logical shortcut: `between()`. Although we could do the same operation by calling native R logical operators, once again, human readability wins. For completeness, here is the same operation with just logical operators:
+
+```{r}
+d <- filter(d, age >= 13 & age <= 99)
+```
+
+In the future, you can choose which one pleases your eye most. Logical operators are often needed, but `between()` is a pretty cool shortcut. Just make sure that you know whether the boundary values are included or not (they are, by default, when calling `between()`.)
+
+### First plot
+
+We now have readable and clean data, and know that we can print it in the console by simply typing `d`. But we would like to __see__ the data!
+
+Let's take all the commands we've learned so far, put them into a single piped chain of commands, and instead of simply printing the results, we'll pass them into a plotting function. Try to read the code before viewing the plot, and guess what the plot might look like. The code is so readable that we can almost see the plot in our minds eyes by just reading the code!
+
+```{r}
+d %>%
+    filter(gender %in% c("female", "male")) %>%
+    group_by(race, gender) %>%
+    summarise(agreeableness = mean(agreeableness),
+              openness = mean(openness),
+              neuroticism = mean(neuroticism),
+              extraversion = mean(extraversion)) %>%
+    # Melt into long format suitable for plotting
+    melt(variable.name = "item", value.name = "mean_rating") %>%
+    # Plot it already!
+    ggplot(aes(x = mean_rating, y = race, col = gender)) +
+    geom_point() +
+    facet_wrap(~item)
+```
+
+Great! I again introduced a new operator (`%in%`; we only included genders that match the two strings "female" and "male"), then grouped the data, computed summaries, reshaped (a topic covered shortly) and plotted the data.
+
+# References
+
