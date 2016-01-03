@@ -4,4 +4,4 @@ A tutorial document.
 
 View the document here:
 
-<http://mvuorre.github.io/toolbox/scenario1/analysis/toolbox.html>
+<http://mvuorre.github.io/toolbox/tutorial/tutorial.html>
