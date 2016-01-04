@@ -42,6 +42,7 @@ theme_set(
 # The psychologist's data toolbox 2.0
 
 ### [Matti Vuorre](mailto:mv2521@columbia.edu)
+#### `r Sys.Date()`
 
 Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
 
@@ -100,17 +101,18 @@ This data set is available [here](http://personality-testing.info/_rawdata/BIG5.
 
 Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to ```toolbox/analysis/``` and set it as your working directory:
 
-<img src="setwd.png", height=200px>
+<img src="images/setwd.png", height=200px>
 
 Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.
 
-<img src="newfile.png", height=200px>
+<img src="images/newfile.png", height=200px>
 
 ### Install packages
 
 As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:
 
 ```{r, eval = F}
+install.packages("readr")
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("reshape2")

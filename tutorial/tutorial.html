@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Matti Vuorre" />
-  <meta name="date" content="2016-01-03" />
+  <meta name="date" content="2016-01-04" />
   <title>Toolbox</title>
   <style type="text/css">code{white-space: pre;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -866,7 +866,7 @@
 <div id="header">
 <h1 class="title">Toolbox</h1>
 <h2 class="author">Matti Vuorre</h2>
-<h3 class="date">2016-01-03</h3>
+<h3 class="date">2016-01-04</h3>
 </div>
 <div id="wrap">
 <div class="container">
@@ -879,6 +879,7 @@ h='&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#46;&#x65;&#100;&#x75;';a='&#
 document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matti Vuorre'+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x4d;&#x61;&#116;&#116;&#x69;&#32;&#86;&#x75;&#x6f;&#114;&#114;&#x65;&#32;&#40;&#x6d;&#118;&#50;&#x35;&#50;&#x31;&#32;&#x61;&#116;&#32;&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x65;&#100;&#x75;&#x29;</noscript></h3>
+<h4 id="section">2016-01-04</h4>
 <p>Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data (&quot;pivot tables&quot;), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)</p>
 <p>Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -&gt; SPSS (repeated <em>ad nauseam</em> with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language <span class="citation">(R Core Team 2015)</span>, with its stellar repertoire of user-contributed packages to perfrom various data &quot;wrangling&quot; and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see <a href="http://r4stats.com/articles/popularity/">this post</a>.</p>
 <p>Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.</p>
@@ -919,16 +920,17 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matt
 <p>This data set is available <a href="http://personality-testing.info/_rawdata/BIG5.zip">here</a>. Go ahead and download the .zip file, and unzip it into your data directory.</p>
 <h3 id="open-rstudio">Open RStudio</h3>
 <p>Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to <code>toolbox/analysis/</code> and set it as your working directory:</p>
-<p><img src="setwd.png", height=200px></p>
+<p><img src="images/setwd.png", height=200px></p>
 <p>Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.</p>
-<p><img src="newfile.png", height=200px></p>
+<p><img src="images/newfile.png", height=200px></p>
 <h3 id="install-packages">Install packages</h3>
 <p>As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">install.packages("dplyr")
+<pre style=""><code class="source r">install.packages("readr")
+install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("reshape2")</code></pre>
 </div>
