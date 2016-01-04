@@ -1,7 +1,6 @@
 # The psychologists data toolbox 2.0
 
-A tutorial document. 
+A tutorial document on data wrangling. 
 
-View the document here:
+View the document here: <http://mvuorre.github.io/toolbox/tutorial/tutorial.html>.
 
-<http://mvuorre.github.io/toolbox/tutorial/tutorial.html>

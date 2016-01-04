@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Matti Vuorre" />
-  <meta name="date" content="2016-01-03" />
+  <meta name="date" content="2016-01-04" />
   <title>Toolbox</title>
   <style type="text/css">code{white-space: pre;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -866,7 +866,7 @@
 <div id="header">
 <h1 class="title">Toolbox</h1>
 <h2 class="author">Matti Vuorre</h2>
-<h3 class="date">2016-01-03</h3>
+<h3 class="date">2016-01-04</h3>
 </div>
 <div id="wrap">
 <div class="container">
@@ -879,6 +879,7 @@ h='&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#46;&#x65;&#100;&#x75;';a='&#
 document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matti Vuorre'+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x4d;&#x61;&#116;&#116;&#x69;&#32;&#86;&#x75;&#x6f;&#114;&#114;&#x65;&#32;&#40;&#x6d;&#118;&#50;&#x35;&#50;&#x31;&#32;&#x61;&#116;&#32;&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x65;&#100;&#x75;&#x29;</noscript></h3>
+<h4 id="section">2016-01-04</h4>
 <p>Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data (&quot;pivot tables&quot;), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)</p>
 <p>Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -&gt; SPSS (repeated <em>ad nauseam</em> with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language <span class="citation">(R Core Team 2015)</span>, with its stellar repertoire of user-contributed packages to perfrom various data &quot;wrangling&quot; and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see <a href="http://r4stats.com/articles/popularity/">this post</a>.</p>
 <p>Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.</p>
@@ -919,16 +920,17 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matt
 <p>This data set is available <a href="http://personality-testing.info/_rawdata/BIG5.zip">here</a>. Go ahead and download the .zip file, and unzip it into your data directory.</p>
 <h3 id="open-rstudio">Open RStudio</h3>
 <p>Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to <code>toolbox/analysis/</code> and set it as your working directory:</p>
-<p><img src="setwd.png", height=200px></p>
+<p><img src="images/setwd.png", height=200px></p>
 <p>Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.</p>
-<p><img src="newfile.png", height=200px></p>
+<p><img src="images/newfile.png", height=200px></p>
 <h3 id="install-packages">Install packages</h3>
 <p>As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">install.packages("dplyr")
+<pre style=""><code class="source r">install.packages("readr")
+install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("reshape2")</code></pre>
 </div>
@@ -1451,6 +1453,192 @@ range(d$age)</code></pre>
 </div>
 </div>
 <p>Great! I again introduced a new operator (<code>%in%</code>; we only included genders that match the two strings &quot;female&quot; and &quot;male&quot;), then grouped the data, computed summaries, reshaped (a topic covered shortly) and plotted the data.</p>
+<h2 id="section-1.3">Section 1.3</h2>
+<p>Now that we've gained some basic familiarity in writing R code, its time to encounter a slightly more challenging scenario. We'll still be working with the same data, but this time we begin with multiple source files. We'll</p>
+<ul>
+<li>use R to look at files on your computer</li>
+<li>source an external R function</li>
+<li>write our very own R function</li>
+<li>use this function to merge multiple data files</li>
+</ul>
+<p>Now, unlike in the previous sections, we have a whole bunch of data files in <code>toolbox/scenario1/data/countries/</code>. Before we can do anything with the data, we need to merge it into one object that we can subsequently inspect and work with. We have already learned how to load a single file from a specific location on your computer, but R can look at many files simultaneously, and subsequently allows you to operate on multiple files with <em>style</em>.</p>
+<h3 id="use-r-to-explore-files-and-folders">Use R to explore files and folders</h3>
+<p>To look at these files, we use the <code>list.files()</code> function, that simply takes a path as input, and shows what's in that path (= folder).</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">file_path <- "../scenario1/data/countries/"
+list.files(file_path)</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">#   [1] "(nu.csv" "A1.csv"  "A2.csv"  "AE.csv"  "AG.csv"  "AL.csv"  "AO.csv" 
+#   [8] "AP.csv"  "AR.csv"  "AS.csv"  "AT.csv"  "AU.csv"  "AZ.csv"  "BA.csv" 
+#  [15] "BB.csv"  "BD.csv"  "BE.csv"  "BF.csv"  "BG.csv"  "BH.csv"  "BM.csv" 
+#  [22] "BN.csv"  "BO.csv"  "BR.csv"  "BS.csv"  "BT.csv"  "BW.csv"  "BZ.csv" 
+#  [29] "CA.csv"  "CH.csv"  "CL.csv"  "CM.csv"  "CN.csv"  "CO.csv"  "CR.csv" 
+#  [36] "CV.csv"  "CY.csv"  "CZ.csv"  "DE.csv"  "DK.csv"  "DO.csv"  "DZ.csv" 
+#  [43] "EC.csv"  "EE.csv"  "EG.csv"  "ES.csv"  "ET.csv"  "EU.csv"  "FI.csv" 
+#  [50] "FJ.csv"  "FO.csv"  "FR.csv"  "GB.csv"  "GD.csv"  "GE.csv"  "GG.csv" 
+#  [57] "GH.csv"  "GP.csv"  "GR.csv"  "GT.csv"  "GU.csv"  "GY.csv"  "HK.csv" 
+#  [64] "HN.csv"  "HR.csv"  "HT.csv"  "HU.csv"  "ID.csv"  "IE.csv"  "IL.csv" 
+#  [71] "IM.csv"  "IN.csv"  "IQ.csv"  "IR.csv"  "IS.csv"  "IT.csv"  "JE.csv" 
+#  [78] "JM.csv"  "JO.csv"  "JP.csv"  "KE.csv"  "KG.csv"  "KH.csv"  "KR.csv" 
+#  [85] "KW.csv"  "KY.csv"  "KZ.csv"  "LA.csv"  "LB.csv"  "LK.csv"  "LS.csv" 
+#  [92] "LT.csv"  "LV.csv"  "LY.csv"  "MA.csv"  "ME.csv"  "MK.csv"  "MM.csv" 
+#  [99] "MN.csv"  "MP.csv"  "MR.csv"  "MT.csv"  "MU.csv"  "MV.csv"  "MW.csv" 
+# [106] "MX.csv"  "MY.csv"  "MZ.csv"  "NG.csv"  "NI.csv"  "NL.csv"  "NO.csv" 
+# [113] "NP.csv"  "NZ.csv"  "OM.csv"  "PA.csv"  "PE.csv"  "PG.csv"  "PH.csv" 
+# [120] "PK.csv"  "PL.csv"  "PR.csv"  "PT.csv"  "PW.csv"  "PY.csv"  "QA.csv" 
+# [127] "RO.csv"  "RS.csv"  "RU.csv"  "RW.csv"  "SA.csv"  "SD.csv"  "SE.csv" 
+# [134] "SG.csv"  "SI.csv"  "SK.csv"  "SR.csv"  "SV.csv"  "SY.csv"  "TC.csv" 
+# [141] "TH.csv"  "TN.csv"  "TR.csv"  "TT.csv"  "TW.csv"  "TZ.csv"  "UA.csv" 
+# [148] "UG.csv"  "US.csv"  "UY.csv"  "UZ.csv"  "VC.csv"  "VE.csv"  "VI.csv" 
+# [155] "VN.csv"  "ZA.csv"  "ZM.csv"  "ZW.csv"
+</code></pre>
+</div>
+<p>We would certainly like to avoid manually copy-pasting these in Excel. Fortunately, programming allows us to <a href="https://en.wikipedia.org/wiki/Don&#39;t_repeat_yourself">DRY</a>, and we can load and merge these data with a few lines of code. But we can do even better, because this procedure is very common, we would like to have a function that does it every time, without the need for us to even repeat writing the code that does it!</p>
+<h3 id="source-external-functions">Source external functions</h3>
+<p>This is where a popular, and free, programming language such as R really shines: An <a href="https://github.com/crsh">R user</a> has already created the function, and posted it <a href="https://gist.github.com/crsh/357458c41fd3d554fb24">online</a>. So we only need to learn how to source an external file to our R environment:</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r"># Location of code for batch_read() function
+address <- "https://gist.githubusercontent.com/crsh/357458c41fd3d554fb24/raw/e0089d976e8768bb7438f0295ffc3834697e6c2a/batch_read.R"
+# Source code from this location
+source(address)
+# Typing a function without () prints its associated code
+batch_read</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r"># function (path, extension, ...) 
+# {
+#     data.files <- list.files(path, pattern = extension)
+#     data <- lapply(paste0(path, data.files), read.csv, ...)
+#     data <- do.call("rbind", data)
+#     data
+# }
+</code></pre>
+</div>
+<p>The printout above describes <code>batch_read()</code> as a <em>function</em>, that takes two arguments: <code>path</code> and <code>extension</code>. When this function is executed, it first lists files in <code>path</code> that include the pattern <code>extension</code>. This is extremely helpful, because the function now only reads files that have our pre-specified extension, and ignores all other file types. This list of file names is then saved to <code>data.files</code>.</p>
+<p>The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with nesting functions vs. piping functions, as alluded to in <a href="#Grouped_summaries">Section 1.2</a>). If we begin with the innermost function <code>paste0</code>, we see that multiple strings are concatenated together, without spaces (hence <code>paste0</code> instead of <code>paste</code>):</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">string1 <- "Hello"
+string2 <- "world!"
+paste(string1, string2)</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r"># [1] "Hello world!"
+</code></pre>
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">paste0(string1, string2)</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r"># [1] "Helloworld!"
+</code></pre>
+</div>
+<p>The result of <code>paste0(path, data.files)</code> is then passed to <code>lapply()</code>, that literally means <em>list apply</em>. <code>lapply()</code> takes as its first argument a list, here a list of file names generated by pasting together the file <code>path</code> and a list of file names. The second argument to <code>lapply()</code> is the function to apply to the list: We want to <code>read.csv()</code>. Additionally, this function allows for further arguments, as specified by <code>...</code>, but we ignore this for now. This line, therefore, <em>reads a list of csv files</em>, and saves the list into <code>data</code>.</p>
+<p>A final step remains: The list needs to be unpacked into a data frame. <code>do.call()</code> takes a function and a list of arguments to the function. The function here is <code>rbind</code> (for row-bind; bind data frames together by row), and its argument is the previously constructed list called <code>data</code>.</p>
+<h3 id="write-our-own-function">Write our own function</h3>
+<p>I said before that programming is hard. You learn it by doing it. The preceding discussion is abstract and elusive and we will learn faster by implementing the function ourselves (with credits to its original author of course: <a href="https://github.com/crsh" class="uri">https://github.com/crsh</a>):</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">batch_read <- function(path, extension) {
+  data.files <- list.files(path, pattern = extension)
+  data <- lapply(paste0(path, data.files), read.csv)
+  data <- do.call("rbind", data)
+  data
+}</code></pre>
+</div>
+<h3 id="use-a-function-to-load-and-merge-multiple-data-files">Use a function to load and merge multiple data files</h3>
+<p>Let's put our shiny new <code>batch_read()</code> to use and load our data!</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">d <- batch_read(file_path, ".csv")</code></pre>
+</div>
+<p>There! We read all the .csv files in <code>file_path</code> (../scenario1/data/countries/)</p>
+<h4 id="data.frames-and-data_frames"><code>data.frame</code>s and <code>data_frames</code></h4>
+<p>Because <code>batch_read()</code> uses <code>read.csv()</code> under the hood, the resulting object is a <code>data.frame</code>. Recall earlier that we used <code>read_tsv()</code> and obtained a <code>data_frame</code>. You don't really have to worry about the difference between these two, but note that if you simply type <code>d</code> in to the console right now, the <code>data.frame</code> will print out. It has 19710 rows, and would therefore clutter up the console. To obtain the first few rows, we use <code>head()</code> in conjunction with <code>data.frame</code>s:</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">head(d)</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r">#   X race age engnat gender hand source country E1 E2 E3 E4 E5 E6 E7 E8 E9
+# 1 1    6  20      1      2    1      5     (nu  3  4  4  3  3  3  3  5  2
+# 2 2    3  36      1      1    1      2     (nu  3  2  4  3  3  3  4  3  3
+# 3 3    3  40      2      1    1      2     (nu  2  3  4  2  4  4  2  5  4
+# 4 4   11  18      1      2    1      2     (nu  4  1  5  4  5  1  5  1  5
+# 5 5   11  63      2      1    1      1     (nu  1  4  4  4  3  3  3  5  1
+# 6 6    3  17      1      2    1      5     (nu  3  3  4  4  4  2  3  5  1
+#   E10 N1 N2 N3 N4 N5 N6 N7 N8 N9 N10 A1 A2 A3 A4 A5 A6 A7 A8 A9 A10 C1 C2
+# 1   5  4  5  5  5  3  3  4  3  3   1  1  4  1  4  2  5  2  5  4   5  4  2
+# 2   3  3  3  2  1  3  3  2  2  4   3  1  4  5  5  1  4  2  5  5   4  4  2
+# 3   5  5  3  5  1  4  5  5  4  4   5  3  2  2  3  3  5  5  5  5   5  1  4
+# 4   3  4  4  4  3  3  3  4  2  3   2  2  5  2  4  3  4  1  3  5   4  3  3
+# 5   4  5  2  3  4  4  4  3  4  4   4  4  2  2  4  2  4  3  3  3   3  2  4
+# 6   4  2  3  2  1  2  1  3  3  2   1  5  4  2  5  3  4  1  5  5   5  4  2
+#   C3 C4 C5 C6 C7 C8 C9 C10 O1 O2 O3 O4 O5 O6 O7 O8 O9 O10
+# 1  4  1  4  2  4  3  4   5  3  2  5  2  4  1  4  2  4   5
+# 2  3  4  2  1  3  2  2   3  4  3  4  2  4  2  4  4  5   4
+# 3  4  4  1  4  5  5  2   1  5  1  4  3  5  2  5  4  5   5
+# 4  4  3  3  4  3  1  3   5  4  1  4  4  4  3  4  3  3   4
+# 5  3  4  3  3  2  3  3   3  2  2  5  2  2  2  4  3  2   2
+# 6  2  1  2  1  5  2  4   4  1  4  3  3  3  1  2  1  2   4
+</code></pre>
+</div>
+<p>Compare this with the behavior of a <code>data_frame</code>:</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button>
+<pre style=""><code class="source r">d <- as_data_frame(d)
+d</code></pre>
+<button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button>
+<pre style=""><code class="output r"># Source: local data frame [19,710 x 58]
+# 
+#        X  race   age engnat gender  hand source country    E1    E2    E3
+#    (int) (int) (int)  (int)  (int) (int)  (int)  (fctr) (int) (int) (int)
+# 1      1     6    20      1      2     1      5     (nu     3     4     4
+# 2      2     3    36      1      1     1      2     (nu     3     2     4
+# 3      3     3    40      2      1     1      2     (nu     2     3     4
+# 4      4    11    18      1      2     1      2     (nu     4     1     5
+# 5      5    11    63      2      1     1      1     (nu     1     4     4
+# 6      6     3    17      1      2     1      5     (nu     3     3     4
+# 7      7    11    18      2      2     1      1     (nu     1     5     1
+# 8      8     3    17      1      2     1      1     (nu     4     2     4
+# 9      9    13    18      2      2     1      5     (nu     1     5     5
+# 10    10     3    17      1      2     1      3     (nu     3     3     4
+# ..   ...   ...   ...    ...    ...   ...    ...     ...   ...   ...   ...
+# Variables not shown: E4 (int), E5 (int), E6 (int), E7 (int), E8 (int), E9
+#   (int), E10 (int), N1 (int), N2 (int), N3 (int), N4 (int), N5 (int), N6
+#   (int), N7 (int), N8 (int), N9 (int), N10 (int), A1 (int), A2 (int), A3
+#   (int), A4 (int), A5 (int), A6 (int), A7 (int), A8 (int), A9 (int), A10
+#   (int), C1 (int), C2 (int), C3 (int), C4 (int), C5 (int), C6 (int), C7
+#   (int), C8 (int), C9 (int), C10 (int), O1 (int), O2 (int), O3 (int), O4
+#   (int), O5 (int), O6 (int), O7 (int), O8 (int), O9 (int), O10 (int)
+</code></pre>
+</div>
+<p>That's why we prefer <code>data_frame</code>s.</p>
 <h1 id="references">References</h1>
 </div>
 </div>

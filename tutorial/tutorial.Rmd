@@ -19,6 +19,7 @@ bibliography: tutorial.bib
 library(knitr)
 library(gridExtra)
 library(countrycode)
+library(readr)
 library(dplyr)
 library(ggplot2)
 library(ggthemes)
@@ -42,6 +43,7 @@ theme_set(
 # The psychologist's data toolbox 2.0
 
 ### [Matti Vuorre](mailto:mv2521@columbia.edu)
+#### `r Sys.Date()`
 
 Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
 
@@ -100,17 +102,18 @@ This data set is available [here](http://personality-testing.info/_rawdata/BIG5.
 
 Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to ```toolbox/analysis/``` and set it as your working directory:
 
-<img src="setwd.png", height=200px>
+<img src="images/setwd.png", height=200px>
 
 Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.
 
-<img src="newfile.png", height=200px>
+<img src="images/newfile.png", height=200px>
 
 ### Install packages
 
 As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:
 
 ```{r, eval = F}
+install.packages("readr")
 install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("reshape2")
@@ -461,6 +464,110 @@ d %>%
 ```
 
 Great! I again introduced a new operator (`%in%`; we only included genders that match the two strings "female" and "male"), then grouped the data, computed summaries, reshaped (a topic covered shortly) and plotted the data.
+
+## Section 1.3
+
+```{r, echo = F, results = 'hide'}
+# Prepares the data for this section
+c_list <- read_tsv("../scenario1/data/data.csv") %>%
+    split(., .$country)
+names(c_list)
+split_write <- function(x) {
+    write.csv(c_list[[x]], 
+              file = paste0("../scenario1/data/countries/",
+                            x, ".csv"))
+}
+sapply(names(c_list), split_write)
+```
+
+Now that we've gained some basic familiarity in writing R code, its time to encounter a slightly more challenging scenario. We'll still be working with the same data, but this time we begin with multiple source files. We'll
+
+* use R to look at files on your computer
+* source an external R function
+* write our very own R function
+* use this function to merge multiple data files
+
+Now, unlike in the previous sections, we have a whole bunch of data files in `toolbox/scenario1/data/countries/`. Before we can do anything with the data, we need to merge it into one object that we can subsequently inspect and work with. We have already learned how to load a single file from a specific location on your computer, but R can look at many files simultaneously, and subsequently allows you to operate on multiple files with _style_.
+
+### Use R to explore files and folders
+
+To look at these files, we use the `list.files()` function, that simply takes a path as input, and shows what's in that path (= folder).
+
+```{r}
+file_path <- "../scenario1/data/countries/"
+list.files(file_path)
+```
+
+We would certainly like to avoid manually copy-pasting these in Excel. Fortunately, programming allows us to [DRY](https://en.wikipedia.org/wiki/Don't_repeat_yourself), and we can load and merge these data with a few lines of code. But we can do even better, because this procedure is very common, we would like to have a function that does it every time, without the need for us to even repeat writing the code that does it! 
+
+### Source external functions
+
+This is where a popular, and free, programming language such as R really shines: An [R user](https://github.com/crsh) has already created the function, and posted it [online](https://gist.github.com/crsh/357458c41fd3d554fb24). So we only need to learn how to source an external file to our R environment: 
+
+```{r}
+# Location of code for batch_read() function
+address <- "https://gist.githubusercontent.com/crsh/357458c41fd3d554fb24/raw/e0089d976e8768bb7438f0295ffc3834697e6c2a/batch_read.R"
+# Source code from this location
+source(address)
+# Typing a function without () prints its associated code
+batch_read
+```
+
+The printout above describes `batch_read()` as a _function_, that takes two arguments: `path` and `extension`. When this function is executed, it first lists files in `path` that include the pattern `extension`. This is extremely helpful, because the function now only reads files that have our pre-specified extension, and ignores all other file types. This list of file names is then saved to `data.files`. 
+
+The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with nesting functions vs. piping functions, as alluded to in [Section 1.2](#Grouped_summaries)). If we begin with the innermost function `paste0`, we see that multiple strings are concatenated together, without spaces (hence `paste0` instead of `paste`):
+
+```{r}
+string1 <- "Hello"
+string2 <- "world!"
+paste(string1, string2)
+paste0(string1, string2)
+```
+
+The result of `paste0(path, data.files)` is then passed to `lapply()`, that literally means _list apply_. `lapply()` takes as its first argument a list, here a list of file names generated by pasting together the file `path` and a list of file names. The second argument to `lapply()` is the function to apply to the list: We want to `read.csv()`. Additionally, this function allows for further arguments, as specified by `...`, but we ignore this for now. This line, therefore, _reads a list of csv files_, and saves the list into `data`.
+
+A final step remains: The list needs to be unpacked into a data frame. `do.call()` takes a function and a list of arguments to the function. The function here is `rbind` (for row-bind; bind data frames together by row), and its argument is the previously constructed list called `data`.
+
+### Write our own function
+
+I said before that programming is hard. You learn it by doing it. The preceding discussion is abstract and elusive and we will learn faster by implementing the function ourselves (with credits to its original author of course: <https://github.com/crsh>):
+
+```{r}
+batch_read <- function(path, extension) {
+  data.files <- list.files(path, pattern = extension)
+  data <- lapply(paste0(path, data.files), read.csv)
+  data <- do.call("rbind", data)
+  data
+}
+```
+
+### Use a function to load and merge multiple data files
+
+Let's put our shiny new `batch_read()` to use and load our data!
+
+```{r}
+d <- batch_read(file_path, ".csv")
+```
+
+There! We read all the .csv files in `file_path` (`r file_path`)
+
+#### `data.frame`s and `data_frames`
+
+Because `batch_read()` uses `read.csv()` under the hood, the resulting object is a `data.frame`. Recall earlier that we used `read_tsv()` and obtained a `data_frame`. You don't really have to worry about the difference between these two, but note that if you simply type `d` in to the console right now, the `data.frame` will print out. It has 19710 rows, and would therefore clutter up the console. To obtain the first few rows, we use `head()` in conjunction with `data.frame`s:
+
+```{r}
+head(d)
+```
+
+Compare this with the behavior of a `data_frame`:
+
+```{r}
+d <- as_data_frame(d)
+d
+```
+
+That's why we prefer `data_frame`s.
+
 
 # References
 
