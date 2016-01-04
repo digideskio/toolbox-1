@@ -568,6 +568,6 @@ d
 
 That's why we prefer `data_frame`s.
 
+# Further reading and references
 
-# References
-
+Gentzkow, M., & Shapiro, J. M. (2014, March 10). Code and Data for the Social Sciences: A Practitioner’s Guide. Retrieved from http://web.stanford.edu/~gentzkow/research/CodeAndData.pdf
