@@ -5,8 +5,8 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Matti Vuorre" />
-  <meta name="date" content="2016-01-04" />
-  <title>Toolbox</title>
+  <meta name="date" content="2016-01-05" />
+  <title>Questionnaire data</title>
   <style type="text/css">code{white-space: pre;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -861,40 +861,34 @@
     }
   }
   </style>
+  <!DOCTYPE HTML>
+  <!--custom header for all pages-->
+  <!--indented text class-->
+  <style type="text/css">
+  .tab { margin-left: 40px; margin-top: 10px;}
+  </style>
+  <!--title-->
+  <h1 class="tab">The psychologist's data toolbox 2.0</h1>
+  <h3 class="tab"><a href="mailto:mv2521@columbia.edu">Matti Vuorre</a></h3>
+  <!--navigation header for pages-->
+  <p class="tab"><a href="../introduction/introduction.html">Introduction</a> | <a href="rrstudio.html">R and RStudio</a> | <a href="../questionnaire/questionnaire.html">Questionnaire data</a> | <a href="https://github.com/mvuorre/toolbox">[home]</a></p>
+  <hr>
 </head>
 <body>
 <div id="header">
-<h1 class="title">Toolbox</h1>
+<h1 class="title">Questionnaire data</h1>
 <h2 class="author">Matti Vuorre</h2>
-<h3 class="date">2016-01-04</h3>
+<h3 class="date">2016-01-05</h3>
 </div>
 <div id="wrap">
 <div class="container">
 <div class="row row-offcanvas row-offcanvas-right">
 <div class="contents col-xs-12 col-md-10">
-<h1 id="the-psychologists-data-toolbox-2.0">The psychologist's data toolbox 2.0</h1>
-<h3 id="matti-vuorre"><script type="text/javascript">
-<!--
-h='&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#46;&#x65;&#100;&#x75;';a='&#64;';n='&#x6d;&#118;&#50;&#x35;&#50;&#x31;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matti Vuorre'+'<\/'+'a'+'>');
-// -->
-</script><noscript>&#x4d;&#x61;&#116;&#116;&#x69;&#32;&#86;&#x75;&#x6f;&#114;&#114;&#x65;&#32;&#40;&#x6d;&#118;&#50;&#x35;&#50;&#x31;&#32;&#x61;&#116;&#32;&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x65;&#100;&#x75;&#x29;</noscript></h3>
-<h4 id="section">2016-01-04</h4>
-<p>Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data (&quot;pivot tables&quot;), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)</p>
-<p>Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -&gt; SPSS (repeated <em>ad nauseam</em> with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language <span class="citation">(R Core Team 2015)</span>, with its stellar repertoire of user-contributed packages to perfrom various data &quot;wrangling&quot; and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see <a href="http://r4stats.com/articles/popularity/">this post</a>.</p>
-<p>Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.</p>
-<p>Because my goal is to introduce R to <em>practitioners</em> of statistical analyses, I will not cover the basics of R in a conventional sense, where we create vectors of numbers and multiply them by 1, but instead we focus on multiple <strong>&quot;scenarios&quot;</strong> that practicing psychologists may encounter. Through these scenarios, we become familiar with <em>awesome</em> tools that are applicable in any domain, and the switch from an example scenario to the one you are facing right now requires only a slight rethinking in data organization and variable names.</p>
-<h1 id="before-we-get-started...">Before we get started...</h1>
-<p>Programming is hard. You learn it by doing it. I recommend you follow the examples here by typing them into your own R script files, and execute them on your own computer. No prior knowledge of R or programming in general is required, but I will not explain, for example, how to create folders on your computer.</p>
-<p>I rely heavily on user-contributed packages to the R programming language, but many people still hold to the maxim that &quot;unnecessary abstraction&quot; is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R. I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing a set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Note that I do not claim that base-R doesn't do its job, it does it brilliantly, in fact, but we can learn much faster, and generalize the skills much easier by using additional packages, and that is my goal.</p>
-<p>We will dive right into our first scenario: Questionnaire data</p>
-<h1 id="scenario-1-personality-questionnaire-data">Scenario 1: Personality Questionnaire Data</h1>
-<h2 id="section-1.1">Section 1.1</h2>
+<h1 id="project-personality-questionnaire-data">Project: Personality Questionnaire Data</h1>
+<h4 id="section">2016-01-05</h4>
 <p>In the first part of this scenario, we'll download an open personality questionnaire data set, and learn to</p>
 <ul>
 <li><a href="#Project_organization">organize a programming project</a></li>
-<li><a href="#Open_RStudio">get started with RStudio</a></li>
-<li><a href="#Install_packages">install R packages</a></li>
 <li><a href="#Load_the_data">load data with RStudio</a>
 <ul>
 <li>New tool: The <code>read_</code> family of functions</li>
@@ -905,8 +899,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matt
 <li>New tool: <code>mutate()</code></li>
 </ul></li>
 </ul>
-<p>As a bonus, we will immediately start learning good programming practices by making our code (and data) <strong>human-readable</strong>.</p>
-<p>Our goal is to produce analyses that we can re-run with minimum effort. The first step toward this goal is to create and maintain a clear organization for our materials. Therefore, we'll spend the first 3 minutes reflecting on how the project should be organized.</p>
 <h3 id="project-organization">Project organization</h3>
 <p>A typical project consists of source data files, analysis script(s), and output files, such as figures, tables, and possibly manuscripts. Realizing that these basic components need to be stored in an understandable and accessible manner, we create a <strong>folder structure</strong> accordingly:</p>
 <pre><code>toolbox/
@@ -918,23 +910,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matt
 <p><This is not the only "correct" structure, but something that makes sense to me and is easy to explain to others. By all means use one that suits your needs better.></p>
 <h3 id="download-the-data">Download the data</h3>
 <p>This data set is available <a href="http://personality-testing.info/_rawdata/BIG5.zip">here</a>. Go ahead and download the .zip file, and unzip it into your data directory.</p>
-<h3 id="open-rstudio">Open RStudio</h3>
-<p>Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to <code>toolbox/analysis/</code> and set it as your working directory:</p>
-<p><img src="images/setwd.png", height=200px></p>
-<p>Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.</p>
-<p><img src="images/newfile.png", height=200px></p>
-<h3 id="install-packages">Install packages</h3>
-<p>As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:</p>
-<div class="row">
-<button class="source R toggle btn btn-xs btn-primary">
-<span class="glyphicon glyphicon-chevron-down"></span> R source
-</button>
-<pre style=""><code class="source r">install.packages("readr")
-install.packages("dplyr")
-install.packages("ggplot2")
-install.packages("reshape2")</code></pre>
-</div>
-<p>These commands only need to be entered once. We are now ready to begin...</p>
 <h3 id="load-the-data">Load the data</h3>
 <p>We downloaded a <em>tab-separated</em> spreadsheet of data, meaning that each column in the data-set is separated by a tab. I encounter <em>comma-separated</em> tables more often, but the separator doesn't matter! It's just good to know what your source is. Let's enter the first line of code to our script: Load the data. As I alluded to above, by knowing your source, you know right away which tool to grab. Here, we will use the <code>read_tsv</code> function (=tool) from the <code>readr</code> package.</p>
 <div class="row">
@@ -989,7 +964,7 @@ d <- na.omit(d)  # Remove all missing values</code></pre>
 <p><small><strong>Note to readers who already use R</strong>: A data_frame is slightly different, but arguably better, than the base-R data.frame. For instance, note how the object printed in the console: We see each variable and its associated data type, and additional lines are automatically clipped. We can, however, conceptually treat it as a data.frame for almost any application.</small></p>
 <h3 id="recode-variables">Recode variables</h3>
 <p>Here we encounter the first of many perils of not organizing and curating your materials well: Although we know what race means (maybe?), the numbers don't make any sense. What is race 13? The authors of course have provided a codebook (it's now in your <code>toolbox/data/</code> folder), but such an external file requires us to switch back and forth between files to understand our data, and I strongly recommend writing <strong>human-readable</strong> variable names and code so that we don't need to go back and forth between the data and its related codebook. The first step, therefore, is to make the data as close to human-readable as possible.</p>
-<p>For this task, we'll pick up another tool: the <code>mutate()</code> function in the <code>dplyr</code> package <span class="citation">(Wickham and Francois 2015)</span>.</p>
+<p>For this task, we'll pick up another tool: the <code>mutate()</code> function in the <code>dplyr</code> package <span class="citation">(Wickham &amp; Francois, 2015)</span>.</p>
 <p>The following code takes <code>d</code> and converts <code>race</code>, <code>engnat</code>, <code>gender</code>, and <code>hand</code> into more readable <strong>factors</strong>. Factors are R's way of attaching verbal labels to numerical data, and are the suitable data format for these variables.</p>
 <div class="row">
 <button class="source R toggle btn btn-xs btn-primary">
@@ -1468,7 +1443,7 @@ range(d$age)</code></pre>
 <button class="source R toggle btn btn-xs btn-primary">
 <span class="glyphicon glyphicon-chevron-down"></span> R source
 </button>
-<pre style=""><code class="source r">file_path <- "../scenario1/data/countries/"
+<pre style=""><code class="source r">file_path <- "data/countries/"
 list.files(file_path)</code></pre>
 <button class="output R toggle btn btn-xs btn-success">
 <span class="glyphicon glyphicon-chevron-down"></span> R output
@@ -1511,17 +1486,6 @@ address <- "https://gist.githubusercontent.com/crsh/357458c41fd3d554fb24/raw/e00
 source(address)
 # Typing a function without () prints its associated code
 batch_read</code></pre>
-<button class="output R toggle btn btn-xs btn-success">
-<span class="glyphicon glyphicon-chevron-down"></span> R output
-</button>
-<pre style=""><code class="output r"># function (path, extension, ...) 
-# {
-#     data.files <- list.files(path, pattern = extension)
-#     data <- lapply(paste0(path, data.files), read.csv, ...)
-#     data <- do.call("rbind", data)
-#     data
-# }
-</code></pre>
 </div>
 <p>The printout above describes <code>batch_read()</code> as a <em>function</em>, that takes two arguments: <code>path</code> and <code>extension</code>. When this function is executed, it first lists files in <code>path</code> that include the pattern <code>extension</code>. This is extremely helpful, because the function now only reads files that have our pre-specified extension, and ignores all other file types. This list of file names is then saved to <code>data.files</code>.</p>
 <p>The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with nesting functions vs. piping functions, as alluded to in <a href="#Grouped_summaries">Section 1.2</a>). If we begin with the innermost function <code>paste0</code>, we see that multiple strings are concatenated together, without spaces (hence <code>paste0</code> instead of <code>paste</code>):</p>
@@ -1570,7 +1534,7 @@ paste(string1, string2)</code></pre>
 </button>
 <pre style=""><code class="source r">d <- batch_read(file_path, ".csv")</code></pre>
 </div>
-<p>There! We read all the .csv files in <code>file_path</code> (../scenario1/data/countries/)</p>
+<p>There! We read all the .csv files in <code>file_path</code> (data/countries/)</p>
 <h4 id="data.frames-and-data_frames"><code>data.frame</code>s and <code>data_frames</code></h4>
 <p>Because <code>batch_read()</code> uses <code>read.csv()</code> under the hood, the resulting object is a <code>data.frame</code>. Recall earlier that we used <code>read_tsv()</code> and obtained a <code>data_frame</code>. You don't really have to worry about the difference between these two, but note that if you simply type <code>d</code> in to the console right now, the <code>data.frame</code> will print out. It has 19710 rows, and would therefore clutter up the console. To obtain the first few rows, we use <code>head()</code> in conjunction with <code>data.frame</code>s:</p>
 <div class="row">
@@ -1639,7 +1603,7 @@ d</code></pre>
 </code></pre>
 </div>
 <p>That's why we prefer <code>data_frame</code>s.</p>
-<h1 id="references">References</h1>
+# References
 </div>
 </div>
 <div class="navbar navbar-fixed-bottom navbar-inverse">
@@ -1806,8 +1770,7 @@ Styled with <a href="https://github.com/jimhester/knitrBootstrap">knitrBootstrap
 <link rel="stylesheet" id="theme" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" media="screen"></link><link rel="stylesheet" id="highlight" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-bright.min.css" media="screen"></link>
 </div>
 <div class="references">
-<p>R Core Team. 2015. <em>R: A Language and Environment for Statistical Computing</em>. Vienna, Austria: R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
-<p>Wickham, Hadley, and Romain Francois. 2015. <em>Dplyr: A Grammar of Data Manipulation</em>. <a href="http://CRAN.R-project.org/package=dplyr" class="uri">http://CRAN.R-project.org/package=dplyr</a>.</p>
+<p>Wickham, H., &amp; Francois, R. (2015). <em>Dplyr: A grammar of data manipulation</em>. Retrieved from <a href="http://CRAN.R-project.org/package=dplyr" class="uri">http://CRAN.R-project.org/package=dplyr</a></p>
 </div>
 </body>
 </html>
