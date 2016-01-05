@@ -2,21 +2,19 @@
 
 A tutorial document on data wrangling. 
 
-View the document here: <http://mvuorre.github.io/toolbox/tutorial/tutorial.html>.
+The tutorial consists of multiple example projects, which can be used to learn data wrangling in R with an applied perspective. 
 
-The tutorial consists of multiple scenarios, which can be used to learn data wrangling in R with an applied perspective. 
-
-## Introduction
+## [Introduction](http://mvuorre.github.io/toolbox/introduction/introduction.html)
 
 * What is toolbox 2.0 and why do we need it?
 
-## R and RStudio
+## [R and RStudio](http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html)
 
 * Learn the basics of R and RStudio
     - No programming experience required
     - 100% success or money back guarantee
 
-## Questionnaire data: Beginning data wrangling
+## [Questionnaire data: Beginning data wrangling](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
 
 * Get started with data wrangling with real questionnaire data
 
