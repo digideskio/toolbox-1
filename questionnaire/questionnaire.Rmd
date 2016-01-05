@@ -1,5 +1,5 @@
 ---
-title: "Toolbox"
+title: "Questionnaire data"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output:
@@ -9,76 +9,26 @@ output:
     theme.chooser: true
     highlight.chooser: TRUE
     menu: true
-bibliography: tutorial.bib
+    custom.header: ../common/head.html
+bibliography: ../common/bibliography.bib
+csl: ../common/apa.csl
 ---
 
 ```{r, echo=F, warning=FALSE, message=FALSE}
-# Document information:
-# Created with knitrBootsrap (https://github.com/jimhester/knitrBootstrap)
-# install_github('jimhester/knitrBootstrap')
-library(knitr)
-library(gridExtra)
-library(countrycode)
-library(readr)
-library(dplyr)
-library(ggplot2)
-library(ggthemes)
-library(reshape2)
-opts_chunk$set(fig.retina = 2,
-               fig.align = 'center',
-               comment = "#",
-               warning = F,
-               message = F,
-               fig.width=8,
-               cache = T,
-               bootstrap.thumbnail.size = 'col-md-6',
-               bootstrap.panel = FALSE)
-# options(digits = 2)
-theme_set(
-    theme_minimal() + 
-        theme(panel.grid.minor = element_blank(),
-              legend.position = "bottom"))
+source("../common/chunk_opts.R")
 ```
 
-# The psychologist's data toolbox 2.0
-
-### [Matti Vuorre](mailto:mv2521@columbia.edu)
+# Project: Personality Questionnaire Data
 #### `r Sys.Date()`
-
-Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
-
-Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -> SPSS (repeated _ad nauseam_ with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language [@r_core_team_r:_2015], with its stellar repertoire of user-contributed packages to perfrom various data "wrangling" and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see [this post](http://r4stats.com/articles/popularity/).
-
-Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.
-
-Because my goal is to introduce R to _practitioners_ of statistical analyses, I will not cover the basics of R in a conventional sense, where we create vectors of numbers and multiply them by 1, but instead we focus on multiple __"scenarios"__ that practicing psychologists may encounter. Through these scenarios, we become familiar with _awesome_ tools that are applicable in any domain, and the switch from an example scenario to the one you are facing right now requires only a slight rethinking in data organization and variable names. 
-
-# Before we get started...
-
-Programming is hard. You learn it by doing it. I recommend you follow the examples here by typing them into your own R script files, and execute them on your own computer. No prior knowledge of R or programming in general is required, but I will not explain, for example, how to create folders on your computer. 
-
-I rely heavily on user-contributed packages to the R programming language, but many people still hold to the maxim that "unnecessary abstraction" is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R. I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing a set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Note that I do not claim that base-R doesn't do its job, it does it brilliantly, in fact, but we can learn much faster, and generalize the skills much easier by using additional packages, and that is my goal.
-
-We will dive right into our first scenario: Questionnaire data
-
-# Scenario 1: Personality Questionnaire Data
-
-## Section 1.1
 
 In the first part of this scenario, we'll download an open personality questionnaire data set, and learn to 
 
 * [organize a programming project](#Project_organization)
-* [get started with RStudio](#Open_RStudio)
-* [install R packages](#Install_packages)
 * [load data with RStudio](#Load_the_data)
     * New tool: The `read_` family of functions
 * [look at the data](#Get_to_know_the_data)
 * [recode variables](#Recode_variables)
     * New tool: `mutate()`
-
-As a bonus, we will immediately start learning good programming practices by making our code (and data) __human-readable__.
-
-Our goal is to produce analyses that we can re-run with minimum effort. The first step toward this goal is to create and maintain a clear organization for our materials. Therefore, we'll spend the first 3 minutes reflecting on how the project should be organized.
 
 ### Project organization
 
@@ -98,29 +48,6 @@ toolbox/
 
 This data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip). Go ahead and download the .zip file, and unzip it into your data directory. 
 
-### Open RStudio
-
-Now that you've your materials in your shiny new toolshed, it's time to step in and get to work. Open RStudio, navigate to ```toolbox/analysis/``` and set it as your working directory:
-
-<img src="images/setwd.png", height=200px>
-
-Now we're prepared to start writing commands, but before we do so, we want to create a file where we can save these commands. This file is an R script, and when we're done writing all our commands, we can re-run the whole analysis by simply sourcing it! No need to point-and-click your way through multiple menus.
-
-<img src="images/newfile.png", height=200px>
-
-### Install packages
-
-As I explained above, we will rely on additional packages to the R programming language. Installing these packages is simple; you only need to call a few functions in R. So, with R open, enter the following commands to the console:
-
-```{r, eval = F}
-install.packages("readr")
-install.packages("dplyr")
-install.packages("ggplot2")
-install.packages("reshape2")
-```
-
-These commands only need to be entered once. We are now ready to begin...
-
 ### Load the data
 
 We downloaded a _tab-separated_ spreadsheet of data, meaning that each column in the data-set is separated by a tab. I encounter _comma-separated_ tables more often, but the separator doesn't matter! It's just good to know what your source is. Let's enter the first line of code to our script: Load the data. As I alluded to above, by knowing your source, you know right away which tool to grab. Here, we will use the `read_tsv` function (=tool) from the `readr` package.
@@ -133,7 +60,7 @@ d <- na.omit(d)  # Remove all missing values
 
 ```{r echo = F}
 # File structure for tutorial slightly different than user tutorial
-d <- readr::read_tsv("../scenario1/data/data.csv") %>%
+d <- readr::read_tsv("data/data.csv") %>%
     na.omit(.)
 ```
 For an explanation of the `"../data/data.csv"` argument to the function, refer to the folder structure defined above. We only need to tell `read_tsv()` where the file is, and it takes care of the rest. Because we are operating in `toolbox/analysis/` we need to refer one folder down in the hierarchy (`"../"`) and then one up to `"data/"` to access `data.csv`. Do __not__ set working directories in your script, because these calls make others with different root folder structures (usernames, systems, etc.) unable to run your script without changing these arguments.
@@ -469,12 +396,12 @@ Great! I again introduced a new operator (`%in%`; we only included genders that 
 
 ```{r, echo = F, results = 'hide'}
 # Prepares the data for this section
-c_list <- read_tsv("../scenario1/data/data.csv") %>%
+c_list <- read_tsv("data/data.csv") %>%
     split(., .$country)
 names(c_list)
 split_write <- function(x) {
     write.csv(c_list[[x]], 
-              file = paste0("../scenario1/data/countries/",
+              file = paste0("data/countries/",
                             x, ".csv"))
 }
 sapply(names(c_list), split_write)
@@ -494,7 +421,7 @@ Now, unlike in the previous sections, we have a whole bunch of data files in `to
 To look at these files, we use the `list.files()` function, that simply takes a path as input, and shows what's in that path (= folder).
 
 ```{r}
-file_path <- "../scenario1/data/countries/"
+file_path <- "data/countries/"
 list.files(file_path)
 ```
 
@@ -504,7 +431,7 @@ We would certainly like to avoid manually copy-pasting these in Excel. Fortunate
 
 This is where a popular, and free, programming language such as R really shines: An [R user](https://github.com/crsh) has already created the function, and posted it [online](https://gist.github.com/crsh/357458c41fd3d554fb24). So we only need to learn how to source an external file to our R environment: 
 
-```{r}
+```{r, eval=F}
 # Location of code for batch_read() function
 address <- "https://gist.githubusercontent.com/crsh/357458c41fd3d554fb24/raw/e0089d976e8768bb7438f0295ffc3834697e6c2a/batch_read.R"
 # Source code from this location
@@ -568,6 +495,4 @@ d
 
 That's why we prefer `data_frame`s.
 
-# Further reading and references
-
-Gentzkow, M., & Shapiro, J. M. (2014, March 10). Code and Data for the Social Sciences: A Practitioner’s Guide. Retrieved from http://web.stanford.edu/~gentzkow/research/CodeAndData.pdf
+# References

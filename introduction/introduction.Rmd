@@ -1,0 +1,44 @@
+---
+title: "Toolbox"
+author: "Matti Vuorre"
+date: "`r Sys.Date()`"
+output:
+  knitrBootstrap::bootstrap_document:
+    theme: simplex
+    highlight: tomorrow night bright
+    theme.chooser: true
+    highlight.chooser: TRUE
+    menu: true
+    custom.header: ../common/head.html
+bibliography: ../common/bibliography.bib
+csl: ../common/apa.csl
+---
+
+```{r, echo=F, warning=FALSE, message=FALSE}
+source("../common/chunk_opts.R")
+```
+
+# Introduction to the psychologist's data toolbox 2.0
+#### `r Sys.Date()`
+
+Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
+
+Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -> SPSS (repeated _ad nauseam_ with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language [@r_core_team_r:_2015], with its stellar repertoire of user-contributed packages to perfrom various data "wrangling" and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see [this post](http://r4stats.com/articles/popularity/).
+
+Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.
+
+Because my goal is to introduce R to _practitioners_ of statistical analyses, I will not cover the basics of R in a conventional sense, where we create vectors of numbers and multiply them by 1, but instead we focus on multiple __"scenarios"__ that practicing psychologists may encounter. Through these scenarios, we become familiar with _awesome_ tools that are applicable in any domain, and the switch from an example scenario to the one you are facing right now requires only a slight rethinking in data organization and variable names. 
+
+# Before we get started...
+
+Programming is hard. You learn it by doing it. I recommend you follow the examples here by typing them into your own R script files, and execute them on your own computer. No prior knowledge of R or programming in general is required, but I will not explain, for example, how to create folders on your computer. 
+
+I rely heavily on user-contributed packages to the R programming language, but many people still hold to the maxim that "unnecessary abstraction" is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R. I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing a set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Note that I do not claim that base-R doesn't do its job, it does it brilliantly, in fact, but we can learn much faster, and generalize the skills much easier by using additional packages, and that is my goal.
+
+# This tutorial
+
+This tutorial consists of modules, where R is put to its proper use in data wrangling different types of data. Users who wish to execute the code as they follow along should download [this zip file](https://github.com/mvuorre/toolbox/archive/master.zip) and place its contents somewhere on their hard disk. This archive contains all the materials required to reproduce every exercise and command presented on these pages, and can also be used to prepare a custome version of these pages.
+
+# Further reading and references
+
+Gentzkow, M., & Shapiro, J. M. (2014, March 10). Code and Data for the Social Sciences: A Practitioner’s Guide. Retrieved from http://web.stanford.edu/~gentzkow/research/CodeAndData.pdf
