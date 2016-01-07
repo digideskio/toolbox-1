@@ -14,60 +14,129 @@ bibliography: ../common/bibliography.bib
 csl: ../common/apa.csl
 ---
 
-```{r, echo=F, warning=FALSE, message=FALSE}
+```{r chunk_opts, echo=F, warning=FALSE, message=FALSE, results = 'hide'}
 source("../common/chunk_opts.R")
+# opts_chunk$set(cache = F)  # reset cache
+# Splits the downloaded data into country-specific files
+c_list <- read_tsv("data/data.csv") %>%
+    split(., .$country)
+names(c_list)
+split_write <- function(x) {
+    write.csv(c_list[[x]], 
+              file = paste0("data/countries/",
+                            x, ".csv"))
+}
+sapply(names(c_list), split_write)
 ```
 
 # Project: Personality Questionnaire Data
 #### `r Sys.Date()`
 
-In the first part of this scenario, we'll download an open personality questionnaire data set, and learn to 
+For this project we'll be using a real data set, consisting of 19,719 individual's responses to 50 questionnaire items that together constitute the Big Five personality scale. Additionally, each respondent provided their gender, age, race, native language and country. With this many respondents, items responded to, and categories by which we can split the responses, we can get answers to a rich set of questions. The data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip), and you can complete the scale yourself on [this website](http://personality-testing.info/).
 
-* [organize a programming project](#Project_organization)
-* [load data with RStudio](#Load_the_data)
-    * New tool: The `read_` family of functions
-* [look at the data](#Get_to_know_the_data)
-* [recode variables](#Recode_variables)
-    * New tool: `mutate()`
+Before we begin wrangling the data, we'll go through an extremely important topic: Project Organization.
 
-### Project organization
+# Organizing a Project
 
-A typical project consists of source data files, analysis script(s), and output files, such as figures, tables, and possibly manuscripts. Realizing that these basic components need to be stored in an understandable and accessible manner, we create a __folder structure__ accordingly:
+While there is no single way to organize a project that would fit every situation, it is imperative that every project have some organizing principles that help the participants in the project find and execute the files within the project. Therefore, before the project is initiated, you need to think about what it is about, what are the likely inputs (e.g. "spreadsheet" type data files, large scale databases, photographs, biological samples) and outputs (e.g. manuscripts, data figures, presentations.) These considerations will heavily narrow down the possible ways in which the project can be organized. 
+
+We will be working with a fairly simple, but I think common, situation where we have multiple "spreadsheet" like data files, and intend to do keep these files on one computer, and produce figures and simple reports from the data. Therefore, we'll set out to define a clear folder structure for our files. A folder structure helps us keep track of our files, ensure that we know what are the inputs (never overwrite the source data!), and how to turn the inputs into outputs. The folder structure I've chosen for this project is displayed below:
 
 ```
-toolbox/
-|-- scenario1/
-|    |-- data/
-|        |-- data.csv
-|    |-- analysis/
-|    |-- output/
+toolbox
+|-- questionnaire
+|   |-- data
+|       |-- data.csv
+|       |-- codebook.txt
+|       |-- countries
+|           |-- (nu.csv
+|           |-- A1.csv
+|           |-- ...
+|           |-- ZW.csv
+|   |-- output
 ```
-<This is not the only "correct" structure, but something that makes sense to me and is easy to explain to others. By all means use one that suits your needs better.>
+<small>This is not the only "correct" structure, but something that makes sense to me and is easy to explain to others. By all means in your own projects use one that suits your needs better.</small> 
 
-### Download the data
+I view a clear folder structure as the first step toward a reproducible research project. By adhering to a simple scheme like this, my future collaborators--including myself!--will almost immediately know how to locate any files they need to do their jobs.
 
-This data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip). Go ahead and download the .zip file, and unzip it into your data directory. 
+If you downloaded all of the [Toolbox 2.0](https://mvuorre.github.io/toolbox/) materials, you can now browse your way to these folders on your computer, and inspect their contents. 
 
-### Load the data
+# Browsing files and folders in RStudio
 
-We downloaded a _tab-separated_ spreadsheet of data, meaning that each column in the data-set is separated by a tab. I encounter _comma-separated_ tables more often, but the separator doesn't matter! It's just good to know what your source is. Let's enter the first line of code to our script: Load the data. As I alluded to above, by knowing your source, you know right away which tool to grab. Here, we will use the `read_tsv` function (=tool) from the `readr` package.
+Before we can access the data in RStudio, we need to set the working directory. Do __not__ set working directories in your script, because these calls make others with different root folder structures (usernames, systems, etc.) unable to run your script without changing these arguments. Instead, you can simply click the Set As Working Directory button in RStudio as described in the [previous section](http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html).
+
+The raw data downloaded from the [website](http://personality-testing.info/_rawdata/BIG5.zip) is a neat and simple spreadsheet of data, but for our purposes, I've split the data into separate files by country. Here we simply take a look at those files, and in the next section write a little function that merges all those country-specific files into one single file. To look at our source files, we use the `list.files()` function that simply takes a path as input, and shows what's in that path.
+
+```{r}
+file_path <- "data/countries/"
+list.files(file_path)
+```
+
+We would certainly like to avoid manually copying and pasting these files into one master file in Excel. Fortunately, programming allows us to [DRY](https://en.wikipedia.org/wiki/Don't_repeat_yourself), and we can load and merge these data with a few lines of code. 
+
+# Combine multiple source files
+
+>The preceding section can be quite difficult if you are only beginning with R. You can skip this step and jump straight into [loading the data](#Load_the_data), and return to this step later when you have more experience with R code.
+
+We have a folder with a bunch of .csv files that we would like to read and save into one master .csv file. Therefore, our task is to write a function that takes a list of files as an input, reads and combines those files, and then saves the output. Because we are only beginning our journey through R, we are not going to invent our own function, but will simply type in a [function that another user has already provided](https://gist.github.com/crsh/357458c41fd3d554fb24) for this specific task
+
+```{r, echo = 3}
+address <- "https://gist.githubusercontent.com/crsh/357458c41fd3d554fb24/raw/e0089d976e8768bb7438f0295ffc3834697e6c2a/batch_read.R"
+source(address)
+batch_read
+```
+
+The printout above describes `batch_read()` as a _function_, that takes two arguments: `path` and `extension`. When this function is executed, it first lists files in `path` whose filename include `extension`. This is extremely helpful, because the function now only reads files that have our pre-specified extension, and ignores all other file types. This list of file names is then saved to `data.files`. 
+
+The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with nesting functions vs. piping functions, which we will get to later). The innermost function `paste0` concatenates multiple text strings together, without spaces (hence `paste0` instead of `paste`):
+
+```{r}
+string1 <- "Hello"
+string2 <- "world!"
+paste(string1, string2)
+paste0(string1, string2)
+```
+
+Because `path` is a text string, and `data.files` is a list of text strings, the result is a new list of text strings. The result of `paste0(path, data.files)` is then passed to `lapply()`, that literally means _list apply_. `lapply()` takes as its first argument a list, here the list of file names. The second argument to `lapply()` is the function to apply to the list: We want to `read.csv()`. Additionally, this function allows for further arguments, as specified by `...`, but we ignore this for now. This line, therefore, _reads a list of csv files_, and saves the list into `data`.
+
+A final step remains: The list needs to be unpacked into a data frame. `do.call()` takes a function and a list of arguments to the function. The function here is `rbind` (for row-bind; bind data frames together by row), and its argument is the previously constructed list called `data`.
+
+## Write our own function
+
+I said before that programming is hard. You learn it by doing it. The preceding discussion is abstract and elusive and we will learn faster by implementing the function ourselves (with credits to its original author: <https://github.com/crsh>):
+
+```{r}
+batch_read <- function(path, extension) {
+  data.files <- list.files(path, pattern = extension)
+  data <- lapply(paste0(path, data.files), read.csv)
+  data <- do.call("rbind", data)
+  data
+}
+```
+
+## Use a function to load and merge multiple data files
+
+Let's put our shiny new `batch_read()` to use and load our data!
+
+```{r}
+d <- batch_read(file_path, ".csv")
+```
+
+There! We read all the .csv files in `file_path` (`r file_path`). If we would like to save the new master data file as a single .csv, we could run the following code
 
 ```{r, eval = F}
+write.csv(d, file = "data/data.csv")
+```
+
+# Load the data
+
+Now that the data is available in a single .csv file in a local folder, the first step is to load it into the current R environment, or workspace. To load the data, we use a function called `read_tsv()` from the `readr` package [@wickham_readr:_2015]. `read_tsv()` takes _tab-separated_ data tables as input, which is appropriate in this case.
+
+```{r, eval = T, cache = F}
 library(readr)  # Loads the readr package into the current workspace
-d <- read_tsv("../data/data.csv")
+d <- read_tsv("data/data.csv") 
 d <- na.omit(d)  # Remove all missing values
 ```
-
-```{r echo = F}
-# File structure for tutorial slightly different than user tutorial
-d <- readr::read_tsv("data/data.csv") %>%
-    na.omit(.)
-```
-For an explanation of the `"../data/data.csv"` argument to the function, refer to the folder structure defined above. We only need to tell `read_tsv()` where the file is, and it takes care of the rest. Because we are operating in `toolbox/analysis/` we need to refer one folder down in the hierarchy (`"../"`) and then one up to `"data/"` to access `data.csv`. Do __not__ set working directories in your script, because these calls make others with different root folder structures (usernames, systems, etc.) unable to run your script without changing these arguments.
-
-We also removed the missing data right away (not many lines), and accept that this is an advanced topic. 
-
-### Get to know the data
 
 Usually at this stage you would probably already know quite a bit about the data, if you collected it yourself. Here we get familiar with the data for this example: The data consist of responses to the Big Five personality questionnaire, and we have indicator variables for the country, age, sex, race, etc. of the respondent. Plenty to explore!
 
@@ -75,15 +144,32 @@ Usually at this stage you would probably already know quite a bit about the data
 
 The structure of the data is as follows:
 
-```{r}
+```{r, cache = F}
 d  # We can inspect the data_frame by simply calling our object d
 ```
 
 We have a `data_frame` named `d` that contains 19710 observations on 57 variables: Each variable is contained in a column, with the top entry (`race`, `age`, ...) giving names to the variables. Under the name in parenthesis, we see the data type of each variable: integers and characters. 
 
-<small>__Note to readers who already use R__: A data_frame is slightly different, but arguably better, than the base-R data.frame. For instance, note how the object printed in the console: We see each variable and its associated data type, and additional lines are automatically clipped. We can, however, conceptually treat it as a data.frame for almost any application.</small>
+## `data.frame`s and `data_frame`s
 
-### Recode variables
+__Note to readers who already use R__: A data_frame is slightly different, but arguably better, than the base-R data.frame. For instance, note the different printing behavior of `data.frame`s and `data_frame`s. We can, however, conceptually treat it as a data.frame for almost any application.
+
+```{r}
+head(read.csv("data/data.csv", sep = "\t"))
+```
+
+Compare this with the behavior of a `data_frame`, above. That's why we prefer `data_frame`s.
+
+# Recode and summarise variables
+
+Now that we're a little more familiar with the data, we can begin to manipulate it. Here, we'll
+
+* [recode variables](#Recode_variables)
+    * new tool: `mutate()`
+* [obtain basic summaries of categorical variables](#Basic_summaries)
+    * new tools: `table()` and `prop.table()`
+
+## Recode variables
 
 Here we encounter the first of many perils of not organizing and curating your materials well: Although we know what race means (maybe?), the numbers don't make any sense. What is race 13? The authors of course have provided a codebook (it's now in your `toolbox/data/` folder), but such an external file requires us to switch back and forth between files to understand our data, and I strongly recommend writing __human-readable__ variable names and code so that we don't need to go back and forth between the data and its related codebook. The first step, therefore, is to make the data as close to human-readable as possible. 
 
@@ -127,13 +213,13 @@ Before we view the output, let's reflect on what we just did. We took `d` and pa
 
 Let's see what we ended up with: 
 
-```{r} 
+```{r, cache = F} 
 d
 ```
 
 Much better! Now we can immediately see meaningful values of race, gender, etc.
 
-### Basic summaries
+## Basic summaries
 
 There are a few basic commands that are well worth knowing. `table()` provides counts of observations for a given variable. To get a single variable (column) from our data frame, we use the `$` operator:
 
@@ -155,11 +241,7 @@ prop.table(table(d$race, d$engnat), margin = 1)
 
 We fed the `engnat`-by`race` table to `prop.table()`, and specified that we want proportions on the first margin. R treats two-dimensional data first by row, second by column. That's why, whenever you want to specify if you'd like to operate on rows or columns, remember that one means row, and two means column. 
 
-### Summary of section 1.1
-
-We entered our toolshed (RStudio) and prepared our workspace. We then learned about `readr` for reading data, and `dplyr` (particularly its `mutate()` function.) By using these tools, we wrangled our data a little bit: We moved from a non-human readable data file to something that looks interpretable by a human. We also obtained tabular summaries, which are useful for counts and proportions of categorical data.  In the next section, we will take `dplyr` to its proper use and group and summarise the data in more flexible ways.
-
-## Intermission
+# Intermission
 
 This is taking a while! Are you still following? Let's take a step back and think about what the goal here is: We want to understand the data in front of us. In order to accomplish this, we must know how to effectively wrangle the data; to group it in various ways, to aggregate it at multiple levels of different grouping factors. We want to be able to quickly draw figures like the one I'll show below:
 
@@ -203,17 +285,13 @@ l <- mutate(d,
            coord_flip())
 plot_args <- c(l$plots, nrow=2, top="Distributions of Four of the Big Five categories across various countries")
 do.call(grid.arrange, plot_args)
-# ggplot(aes(x = reorder(country, value, mean), y = value)) +
-#     geom_point() +
-#     coord_flip() +
-#     facet_wrap(~Item)
 ```
 
-Look at those Danes, with their high openness and low neuroticism... This figure took me about 10 minutes to make. But if I want to change something in it (aesthetics, grouping variables, exclude or include more data, manipulations...), it will take me about 20 seconds and the plot is redrawn with the desired changes. Do that in SPSS or Excel! And this is the point, we want to be able to _quickly_ investigate our data from multiple angles. We'll learn just that in the next section.
+This figure took me about 10 minutes to make. But if I want to change something in it (aesthetics, grouping variables, exclude or include more data, manipulations...), it will take me about 20 seconds and the plot is redrawn with the desired changes. Do that in SPSS or Excel! And this is the point, we want to be able to _quickly_ investigate our data from multiple angles. We'll learn just that in the next section.
 
-## Section 1.2
+# More summaries
 
-We now have an understandable data frame in R, and we can begin investigating it. In this section we'll
+We now understand the basics of the data set, and can compute simple summaries of it. In this section we'll move on to more advanced summaries, and
 
 * summarise variables
     * new tools: `range()` and `summarise()`
@@ -221,14 +299,14 @@ We now have an understandable data frame in R, and we can begin investigating it
     * new tool: `group_by()`
     * bonus round: the pipe `%>%`
 * summarise variables row-wise
-* draw our first plot
-    * new tool: `ggplot()`
 * subset and filter the data
     * new tools: `select()` and `filter()`
+* draw our first plot
+    * new tool: `ggplot()`
     
 There will be a lot of material here, but you can take as long as you wish. If at this stage you haven't done so, I strongly recommend following along by writing the commands to your own R script, and executing them on your own computer.
 
-### Summarise variables
+## Summarise variables
 
 Previously, we summarised categorical variables by looking at their counts using `table()` and `prop.table()`. Next, we'll learn how to summarise continuous data using `range()`, and then take multiple ranges at once using `summarise()`.
 
@@ -261,7 +339,7 @@ c(
 
 Furthermore, `summarise()` takes as input a data frame, and outputs a data frame. This will become very important later on. Another unfortunate consequence not using `summarise()` here was that I wanted to print the means in a single row of output, and therefore had to append the commands in the previous code block in a `c()` (combine) function.
 
-### Grouped summaries
+## Grouped summaries
 
 When we have multivariate data, such as our Big Five questionnaire responses, we can do much more than just total summaries of each of the individual variables. A common question would address the _group means_ of one or many variables. This is the first step toward interesting statements about the data: How do means of Big Five personality questions vary by age? Handedness? Language? Race?
 
@@ -273,7 +351,7 @@ summarise(group_by(d, gender), mE1 = mean(E1))
 
 Instead of taking `mean(E1)` as above, we first grouped our data frame `d` by `gender`, and _then_ asked for the mean of `E1`. Before continuing, I want to take a minute and reflect on the word _then_, and how R has a particularly elegant way of dealing with this verbal construction: The pipe.
 
-#### The pipe
+## The pipe
 
 When I first encountered the pipe, I was perplexed. What is this messy looking thing on each line? `%>%`?? I quickly learned that the pipe connects commands and makes the code much more readable by humans. By appending that to the end of a line, we can pipe commands without either nesting commands, or saving intermediate output. For example, in the previous code chunk, `group_by(d, gender)` was nested inside the summarise function. Nesting functions inside each other quickly makes the code unreadable because while I like reading from left to right, I now must jump back and forth in the code to understand what it is doing. It would be much better if I could write a statement, _then_ another, _then_ yet another... As an example, consider the following:
 
@@ -300,7 +378,7 @@ d %>%
 
 This time, we asked for the median age for each hand and gender. Additionally, we included the number of observations for each summarised group by calling the `n()` function. Lots of right handed females!
 
-### Summarise variables row-wise
+## Summarise variables row-wise
 
 This is a common scenario in questionnaire research: We are not necessarily as interested in individual items on a questionnaire, but rather in the subsets they form. We know that we have five categories of questionnaire items in the Big Five, so here we will create, for each individual respondent, mean values of each of the Big Five categories.
 
@@ -322,7 +400,7 @@ d <- d %>%
 
 Now that we've reduced our data from individual items to means of the Big Five categories, it's time to clean the data by filtering and subsetting.
 
-### Subsets and filters
+## Subsets and filters
 
 Let's take a moment to reflect on our data:
 
@@ -330,28 +408,29 @@ Let's take a moment to reflect on our data:
 d
 ```
 
-We have 63 variables, but some of them are not interesting to us right now. Therefore, I would like to subset the data. 
+Although we just computed the by-person summaries of each of the Big Five items, we don't actually see this in the output, because the data frame contains so many variables. We would therefore like to subset our data.
 
-#### Subset like a pro: `select()`
+### Subset like a pro: `select()`
 
 There is an in-built R function `subset()` that takes subsets of data, but we embrace the modular nature of `dplyr` verbs, and focus on `select()` instead. First, we would like to remove `source` and all the individual Big Five items:
 
 ```{r}
-d <- select(d, 
-            -source,
-            -starts_with("E", ignore.case=F),
-            -starts_with("O", ignore.case=F),
-            -starts_with("N", ignore.case=F),
-            -starts_with("C", ignore.case=F),
-            -starts_with("A", ignore.case=F))
-d
+select(d, 
+       -source,
+       -starts_with("E", ignore.case=F),
+       -starts_with("O", ignore.case=F),
+       -starts_with("N", ignore.case=F),
+       -starts_with("C", ignore.case=F),
+       -starts_with("A", ignore.case=F))
 ```
 
 `select()` takes a data frame as its first argument, followed by arbitrarily many variables in that data frame that you would like to include or exclude. Because we appended a `-` to `source`, we requested that it be excluded. The following lines are slightly more complicated, but do many tasks at once.
 
 `-starts_with("E", ignore.case=F)` says that we would like to select every variable that starts with an E, specify that case should not be ignored (because we don't want to select variables beginning with small _e_), and exclude these variables by starting the command with a negation. As a result, the printed data frame is now much cleaner to look at.
 
-#### Exclude and include cases: `filter()`
+Notice that I didn't actually save the output anywhere. Temporary objects and files simply clutter our workspace and project folders, so we try to abstain from producing intermediate data files. 
+
+### Exclude and include cases: `filter()`
 
 Recall that we had some pretty bizarre entries in the age field (`r range(d$age)`). Therefore our next operation will be to exclude cases (rows), in which the age entry is outside some reasonable criteria, say 13 and 99.
 
@@ -368,7 +447,7 @@ d <- filter(d, age >= 13 & age <= 99)
 
 In the future, you can choose which one pleases your eye most. Logical operators are often needed, but `between()` is a pretty cool shortcut. Just make sure that you know whether the boundary values are included or not (they are, by default, when calling `between()`.)
 
-### First plot
+## First plot
 
 We now have readable and clean data, and know that we can print it in the console by simply typing `d`. But we would like to __see__ the data!
 
@@ -392,107 +471,14 @@ d %>%
 
 Great! I again introduced a new operator (`%in%`; we only included genders that match the two strings "female" and "male"), then grouped the data, computed summaries, reshaped (a topic covered shortly) and plotted the data.
 
-## Section 1.3
-
-```{r, echo = F, results = 'hide'}
-# Prepares the data for this section
-c_list <- read_tsv("data/data.csv") %>%
-    split(., .$country)
-names(c_list)
-split_write <- function(x) {
-    write.csv(c_list[[x]], 
-              file = paste0("data/countries/",
-                            x, ".csv"))
-}
-sapply(names(c_list), split_write)
+```{r, eval = F}
+library(tidyr)
+d %>% add_rownames("id") %>%
+    gather(key = key,
+           value = value,
+           E1:O10) %>%
+    arrange(id)
 ```
-
-Now that we've gained some basic familiarity in writing R code, its time to encounter a slightly more challenging scenario. We'll still be working with the same data, but this time we begin with multiple source files. We'll
-
-* use R to look at files on your computer
-* source an external R function
-* write our very own R function
-* use this function to merge multiple data files
-
-Now, unlike in the previous sections, we have a whole bunch of data files in `toolbox/scenario1/data/countries/`. Before we can do anything with the data, we need to merge it into one object that we can subsequently inspect and work with. We have already learned how to load a single file from a specific location on your computer, but R can look at many files simultaneously, and subsequently allows you to operate on multiple files with _style_.
-
-### Use R to explore files and folders
-
-To look at these files, we use the `list.files()` function, that simply takes a path as input, and shows what's in that path (= folder).
-
-```{r}
-file_path <- "data/countries/"
-list.files(file_path)
-```
-
-We would certainly like to avoid manually copy-pasting these in Excel. Fortunately, programming allows us to [DRY](https://en.wikipedia.org/wiki/Don't_repeat_yourself), and we can load and merge these data with a few lines of code. But we can do even better, because this procedure is very common, we would like to have a function that does it every time, without the need for us to even repeat writing the code that does it! 
-
-### Source external functions
-
-This is where a popular, and free, programming language such as R really shines: An [R user](https://github.com/crsh) has already created the function, and posted it [online](https://gist.github.com/crsh/357458c41fd3d554fb24). So we only need to learn how to source an external file to our R environment: 
-
-```{r, eval=F}
-# Location of code for batch_read() function
-address <- "https://gist.githubusercontent.com/crsh/357458c41fd3d554fb24/raw/e0089d976e8768bb7438f0295ffc3834697e6c2a/batch_read.R"
-# Source code from this location
-source(address)
-# Typing a function without () prints its associated code
-batch_read
-```
-
-The printout above describes `batch_read()` as a _function_, that takes two arguments: `path` and `extension`. When this function is executed, it first lists files in `path` that include the pattern `extension`. This is extremely helpful, because the function now only reads files that have our pre-specified extension, and ignores all other file types. This list of file names is then saved to `data.files`. 
-
-The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with nesting functions vs. piping functions, as alluded to in [Section 1.2](#Grouped_summaries)). If we begin with the innermost function `paste0`, we see that multiple strings are concatenated together, without spaces (hence `paste0` instead of `paste`):
-
-```{r}
-string1 <- "Hello"
-string2 <- "world!"
-paste(string1, string2)
-paste0(string1, string2)
-```
-
-The result of `paste0(path, data.files)` is then passed to `lapply()`, that literally means _list apply_. `lapply()` takes as its first argument a list, here a list of file names generated by pasting together the file `path` and a list of file names. The second argument to `lapply()` is the function to apply to the list: We want to `read.csv()`. Additionally, this function allows for further arguments, as specified by `...`, but we ignore this for now. This line, therefore, _reads a list of csv files_, and saves the list into `data`.
-
-A final step remains: The list needs to be unpacked into a data frame. `do.call()` takes a function and a list of arguments to the function. The function here is `rbind` (for row-bind; bind data frames together by row), and its argument is the previously constructed list called `data`.
-
-### Write our own function
-
-I said before that programming is hard. You learn it by doing it. The preceding discussion is abstract and elusive and we will learn faster by implementing the function ourselves (with credits to its original author of course: <https://github.com/crsh>):
-
-```{r}
-batch_read <- function(path, extension) {
-  data.files <- list.files(path, pattern = extension)
-  data <- lapply(paste0(path, data.files), read.csv)
-  data <- do.call("rbind", data)
-  data
-}
-```
-
-### Use a function to load and merge multiple data files
-
-Let's put our shiny new `batch_read()` to use and load our data!
-
-```{r}
-d <- batch_read(file_path, ".csv")
-```
-
-There! We read all the .csv files in `file_path` (`r file_path`)
-
-#### `data.frame`s and `data_frames`
-
-Because `batch_read()` uses `read.csv()` under the hood, the resulting object is a `data.frame`. Recall earlier that we used `read_tsv()` and obtained a `data_frame`. You don't really have to worry about the difference between these two, but note that if you simply type `d` in to the console right now, the `data.frame` will print out. It has 19710 rows, and would therefore clutter up the console. To obtain the first few rows, we use `head()` in conjunction with `data.frame`s:
-
-```{r}
-head(d)
-```
-
-Compare this with the behavior of a `data_frame`:
-
-```{r}
-d <- as_data_frame(d)
-d
-```
-
-That's why we prefer `data_frame`s.
 
 # References
+<br>

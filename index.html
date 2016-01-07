@@ -5,8 +5,8 @@
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
   <meta name="author" content="Matti Vuorre" />
-  <meta name="date" content="2016-01-07" />
-  <title>Toolbox</title>
+  <meta name="date" content="2016-01-06" />
+  <title>toolbox_index</title>
   <style type="text/css">code{white-space: pre;}</style>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -861,194 +861,43 @@
     }
   }
   </style>
-  <!DOCTYPE HTML>
-  <!--custom header for all pages-->
-  <!--indented text class-->
-  <style type="text/css">
-  .tab { margin-left: 40px; margin-top: 10px;}
-  </style>
-  <!--title-->
-  <h1 class="tab">The psychologist's data toolbox 2.0</h1>
-  <h3 class="tab"><a href="mailto:mv2521@columbia.edu">Matti Vuorre</a></h3>
-  <!--navigation header for pages-->
-  <p class="tab"><a href="../index.html">Main</a> | <a href="../introduction/introduction.html">Introduction</a> | <a href="../rrstudio/rrstudio.html">R and RStudio</a> | <a href="../questionnaire/questionnaire.html">Questionnaire data</a> | <a href="https://github.com/mvuorre/toolbox">[source]</a></p>
-  <hr>
 </head>
 <body>
 <div id="header">
-<h1 class="title">Toolbox</h1>
+<h1 class="title">toolbox_index</h1>
 <h2 class="author">Matti Vuorre</h2>
-<h3 class="date">2016-01-07</h3>
+<h3 class="date">2016-01-06</h3>
 </div>
 <div id="wrap">
 <div class="container">
 <div class="row row-offcanvas row-offcanvas-right">
 <div class="contents col-xs-12 col-md-10">
-<h1 id="introduction-to-the-psychologists-data-toolbox-2.0">Introduction to the psychologist's data toolbox 2.0</h1>
-<h4 id="section">2016-01-07</h4>
-<p>Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data (&quot;pivot tables&quot;), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)</p>
-<p>Based on my experience, this workflow is also common among researchers. Although skilled analysts can and do perfrom brilliantly when constrained by this basic recipe, better alternatives have, unsurprisingly, sprung up in the past two decades. In this document, I propose that by abandoning this Excel -&gt; SPSS (repeated <em>ad nauseam</em> with slight tweaks that require many a buttons to be repeatedly clicked) workflow, students and researchers gain a better understanding of their data, and become better equipped to rapidly investigate their data from multiple angles. Specifically, I'll introduce the basics of the R programming language <span class="citation">(R Core Team, 2015)</span>, with its stellar repertoire of user-contributed packages to perfrom various data &quot;wrangling&quot; and plotting operations. For an in-depth analysis of how R has totally overtaken SPSS on almost any metric, see <a href="http://r4stats.com/articles/popularity/">this post</a>.</p>
-<p>Because the initial data wrangling often needs to be repeated multiple times, the task can be greatly sped up by eschewing the use of Excel in favor of a programming language, where changing a few variables does what requires a completely new walk-through of the data in Excel. Similarly, because figures need to be repeatedly generated, creating them in a programmatic manner greatly reduces the required time for this step of a data-analytic workflow.</p>
-<p>Because my goal is to introduce R to <em>practitioners</em> of statistical analyses, I will not cover the basics of R in a conventional sense, where we create vectors of numbers and multiply them by 1, but instead we focus on multiple <strong>&quot;scenarios&quot;</strong> that practicing psychologists may encounter. Through these scenarios, we become familiar with <em>awesome</em> tools that are applicable in any domain, and the switch from an example scenario to the one you are facing right now requires only a slight rethinking in data organization and variable names.</p>
-<h1 id="before-we-get-started...">Before we get started...</h1>
-<p>Programming is hard. You learn it by doing it. I recommend you follow the examples here by typing them into your own R script files, and execute them on your own computer. No prior knowledge of R or programming in general is required, but I will not explain, for example, how to create folders on your computer.</p>
-<p>I rely heavily on user-contributed packages to the R programming language, but many people still hold to the maxim that &quot;unnecessary abstraction&quot; is evil: They claim that we should be using base-R functions, instead of additional packages, to perform computation in R. I think they are flat-out wrong. In this tutorial, I make an analogy to DIY: The 2.0 data toolbox consists of a toolshed (R and RStudio) containing a set of tools (additional packages), instead of just a hammer and a chisel (base-R, or only pre-built functions in the R programming language.) Note that I do not claim that base-R doesn't do its job, it does it brilliantly, in fact, but we can learn much faster, and generalize the skills much easier by using additional packages, and that is my goal.</p>
-<h1 id="this-tutorial">This tutorial</h1>
-<p>This tutorial consists of modules, where R is put to its proper use in data wrangling different types of data. Users who wish to execute the code as they follow along should download <a href="https://github.com/mvuorre/toolbox/archive/master.zip">this zip file</a> and place its contents somewhere on their hard disk. This archive contains all the materials required to reproduce every exercise and command presented on these pages, and can also be used to prepare a custome version of these pages.</p>
-<h1 id="further-reading-and-references">Further reading and references</h1>
-Gentzkow, M., &amp; Shapiro, J. M. (2014, March 10). Code and Data for the Social Sciences: A Practitioner’s Guide. Retrieved from http://web.stanford.edu/~gentzkow/research/CodeAndData.pdf
-</div>
-</div>
-<div class="navbar navbar-fixed-bottom navbar-inverse">
-<div class="container">
-<div class="navbar-header">
-<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
-</button>
-</div>
-<div id="bottom-navbar" class="navbar-collapse collapse navbar-responsive-collapse">
-<ul class="nav navbar-nav navbar-right">
-<li class="nav">
-<p class="navbar-text">
-Toggle
-</p>
-</li>
-<li class="active">
-<a href="#" type="figure" class="toggle-global">Figures</a>
-</li>
+<h1 id="the-psychologists-data-toolbox-2.0">The Psychologist's data toolbox 2.0</h1>
+<h3 id="matti-vuorre"><script type="text/javascript">
+<!--
+h='&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#46;&#x65;&#100;&#x75;';a='&#64;';n='&#x6d;&#118;&#50;&#x35;&#50;&#x31;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+'Matti Vuorre'+'<\/'+'a'+'>');
+// -->
+</script><noscript>&#x4d;&#x61;&#116;&#116;&#x69;&#32;&#86;&#x75;&#x6f;&#114;&#114;&#x65;&#32;&#40;&#x6d;&#118;&#50;&#x35;&#50;&#x31;&#32;&#x61;&#116;&#32;&#x63;&#x6f;&#108;&#x75;&#x6d;&#98;&#x69;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x65;&#100;&#x75;&#x29;</noscript></h3>
+<h4 id="section">2016-01-06</h4>
+<hr>
+<h2 id="introduction"><a href="http://mvuorre.github.io/toolbox/introduction/introduction.html">Introduction</a></h2>
+<ul>
+<li>What is toolbox 2.0 and why do we need it?</li>
 </ul>
-<ul class="nav navbar-nav navbar-left">
-<li class="dropup">
-<a href="#" class="dropdown-toggle" data-toggle="dropdown">Bootstrap theme <b class="caret"></b></a>
-<ul class="dropdown-menu">
-<li>
-<a class="theme-switch" title="Default" href="#">Default</a>
-</li>
-<li>
-<a class="theme-switch" title="Amelia" href="#">Amelia</a>
-</li>
-<li>
-<a class="theme-switch" title="Cerulean" href="#">Cerulean</a>
-</li>
-<li>
-<a class="theme-switch" title="Cosmo" href="#">Cosmo</a>
-</li>
-<li>
-<a class="theme-switch" title="Cyborg" href="#">Cyborg</a>
-</li>
-<li>
-<a class="theme-switch" title="Journal" href="#">Journal</a>
-</li>
-<li>
-<a class="theme-switch" title="Flatly" href="#">Flatly</a>
-</li>
-<li>
-<a class="theme-switch" title="Readable" href="#">Readable</a>
-</li>
-<li class="active">
-<a class="theme-switch" title="Simplex" href="#">Simplex</a>
-</li>
-<li>
-<a class="theme-switch" title="Slate" href="#">Slate</a>
-</li>
-<li>
-<a class="theme-switch" title="Spacelab" href="#">Spacelab</a>
-</li>
-<li>
-<a class="theme-switch" title="United" href="#">United</a>
-</li>
+<h2 id="r-and-rstudio"><a href="http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html">R and RStudio</a></h2>
+<ul>
+<li>Learn the basics of R and RStudio
+<ul>
+<li>No programming experience required</li>
+<li>100% success or money back guarantee</li>
+</ul></li>
 </ul>
-</li>
-</ul>
-<ul class="nav navbar-nav navbar-left">
-<li class="dropup">
-<a href="#" class="dropdown-toggle" data-toggle="dropdown">Code highlighting <b class="caret"></b></a>
-<ul class="dropdown-menu">
-<li>
-<a class="highlight-switch" title="HighlightJs" href="#">HighlightJs</a>
-</li>
-<li>
-<a class="highlight-switch" title="Dark" href="#">Dark</a>
-</li>
-<li>
-<a class="highlight-switch" title="Far" href="#">Far</a>
-</li>
-<li>
-<a class="highlight-switch" title="Idea" href="#">Idea</a>
-</li>
-<li>
-<a class="highlight-switch" title="Sunburst" href="#">Sunburst</a>
-</li>
-<li>
-<a class="highlight-switch" title="Zenburn" href="#">Zenburn</a>
-</li>
-<li>
-<a class="highlight-switch" title="Visual Studio" href="#">Visual Studio</a>
-</li>
-<li>
-<a class="highlight-switch" title="Ascetic" href="#">Ascetic</a>
-</li>
-<li>
-<a class="highlight-switch" title="Magula" href="#">Magula</a>
-</li>
-<li>
-<a class="highlight-switch" title="Github" href="#">Github</a>
-</li>
-<li>
-<a class="highlight-switch" title="Google Code" href="#">Google Code</a>
-</li>
-<li>
-<a class="highlight-switch" title="Brown Paper" href="#">Brown Paper</a>
-</li>
-<li>
-<a class="highlight-switch" title="School Book" href="#">School Book</a>
-</li>
-<li>
-<a class="highlight-switch" title="IR Black" href="#">IR Black</a>
-</li>
-<li>
-<a class="highlight-switch" title="Solarized - Dark" href="#">Solarized - Dark</a>
-</li>
-<li>
-<a class="highlight-switch" title="Solarized - Light" href="#">Solarized - Light</a>
-</li>
-<li>
-<a class="highlight-switch" title="Arta" href="#">Arta</a>
-</li>
-<li>
-<a class="highlight-switch" title="Monokai" href="#">Monokai</a>
-</li>
-<li>
-<a class="highlight-switch" title="Xcode" href="#">Xcode</a>
-</li>
-<li>
-<a class="highlight-switch" title="Pojoaque" href="#">Pojoaque</a>
-</li>
-<li>
-<a class="highlight-switch" title="Rainbow" href="#">Rainbow</a>
-</li>
-<li>
-<a class="highlight-switch" title="Tomorrow" href="#">Tomorrow</a>
-</li>
-<li>
-<a class="highlight-switch" title="Tomorrow Night" href="#">Tomorrow Night</a>
-</li>
-<li class="active">
-<a class="highlight-switch" title="Tomorrow Night Bright" href="#">Tomorrow Night Bright</a>
-</li>
-<li>
-<a class="highlight-switch" title="Tomorrow Night Blue" href="#">Tomorrow Night Blue</a>
-</li>
-<li>
-<a class="highlight-switch" title="Tomorrow Night Eighties" href="#">Tomorrow Night Eighties</a>
-</li>
-</ul>
-</li>
-</ul>
+<h2 id="questionnaire-data-beginning-data-wrangling"><a href="http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html">Questionnaire data: Beginning data wrangling</a></h2>
+<ul>
+<li>Get started with data wrangling with real questionnaire data
 </div>
 </div>
-</div>
-<link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" title="Default" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/amelia/bootstrap.min.css" title="Amelia" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" title="Cerulean" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cosmo/bootstrap.min.css" title="Cosmo" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cyborg/bootstrap.min.css" title="Cyborg" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/journal/bootstrap.min.css" title="Journal" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/flatly/bootstrap.min.css" title="Flatly" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/readable/bootstrap.min.css" title="Readable" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" title="Simplex" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/slate/bootstrap.min.css" title="Slate" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/spacelab/bootstrap.min.css" title="Spacelab" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/united/bootstrap.min.css" title="United" media="screen"></link><link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/default.min.css" title="HighlightJs" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/dark.min.css" title="Dark" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/far.min.css" title="Far" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/idea.min.css" title="Idea" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/sunburst.min.css" title="Sunburst" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/zenburn.min.css" title="Zenburn" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/vs.min.css" title="Visual Studio" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/ascetic.min.css" title="Ascetic" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/magula.min.css" title="Magula" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/github.min.css" title="Github" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/googlecode.min.css" title="Google Code" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/brown_paper.min.css" title="Brown Paper" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/school_book.min.css" title="School Book" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/ir_black.min.css" title="IR Black" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/solarized_dark.min.css" title="Solarized - Dark" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/solarized_light.min.css" title="Solarized - Light" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/arta.min.css" title="Arta" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/monokai.min.css" title="Monokai" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/xcode.min.css" title="Xcode" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/pojoaque.min.css" title="Pojoaque" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/rainbow.min.css" title="Rainbow" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow.min.css" title="Tomorrow" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night.min.css" title="Tomorrow Night" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-bright.min.css" title="Tomorrow Night Bright" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-blue.min.css" title="Tomorrow Night Blue" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-eighties.min.css" title="Tomorrow Night Eighties" media="screen"></link>
 </div>
 <div id="push">
 
@@ -1061,9 +910,7 @@ Styled with <a href="https://github.com/jimhester/knitrBootstrap">knitrBootstrap
 </div>
 </div>
 <link rel="stylesheet" id="theme" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" media="screen"></link><link rel="stylesheet" id="highlight" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-bright.min.css" media="screen"></link>
-</div>
-<div class="references">
-<p>R Core Team. (2015). <em>R: A language and environment for statistical computing</em>. Vienna, Austria: R Foundation for Statistical Computing. Retrieved from <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a></p>
-</div>
+</div></li>
+</ul>
 </body>
 </html>

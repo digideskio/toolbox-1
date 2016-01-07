@@ -19,6 +19,8 @@ The tutorial consists of multiple example projects, which can be used to learn d
 * Get started with data wrangling with real questionnaire data
 
 
+Repository info:
+
 ```
 toolbox
 |
