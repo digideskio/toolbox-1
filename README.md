@@ -1,8 +1,8 @@
 # The psychologists data toolbox 2.0
 
-A tutorial document on data wrangling. 
+A tutorial document on data wrangling with R. 
 
-The tutorial consists of multiple example projects, which can be used to learn data wrangling in R with an applied perspective. 
+The tutorial consists of multiple example projects, which can be used to learn data wrangling in R with an applied perspective. View the complete tutorial [here](http://mvuorre.github.io/toolbox/index.html), or jump straight into any of the currently available sections, below:
 
 ## [Introduction](http://mvuorre.github.io/toolbox/introduction/introduction.html)
 
