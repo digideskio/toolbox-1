@@ -1,0 +1,35 @@
+---
+title: "toolbox_index"
+author: "Matti Vuorre"
+date: "`r Sys.Date()`"
+output:
+  knitrBootstrap::bootstrap_document:
+    theme: simplex
+    highlight: tomorrow night bright
+    theme.chooser: true
+    highlight.chooser: TRUE
+    menu: false
+---
+
+```{r, echo=F, warning=FALSE, message=FALSE}
+source("common/chunk_opts.R")
+```
+
+# The Psychologist's data toolbox 2.0
+### [Matti Vuorre](mailto:mv2521@columbia.edu)
+#### `r Sys.Date()`
+<hr>
+
+## [Introduction](http://mvuorre.github.io/toolbox/introduction/introduction.html)
+
+* What is toolbox 2.0 and why do we need it?
+
+## [R and RStudio](http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html)
+
+* Learn the basics of R and RStudio
+    - No programming experience required
+    - 100% success or money back guarantee
+
+## [Questionnaire data: Beginning data wrangling](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
+
+* Get started with data wrangling with real questionnaire data
