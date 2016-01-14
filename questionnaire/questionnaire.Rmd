@@ -125,7 +125,7 @@ d <- batch_read(file_path, ".csv")
 There! We read all the .csv files in `file_path` (`r file_path`). If we would like to save the new master data file as a single .csv, we could run the following code
 
 ```{r, eval = F}
-write.csv(d, file = "data/data.csv")
+write.csv(d, file = "data/data.csv", row.names = FALSE)
 ```
 
 # Load the data
