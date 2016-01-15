@@ -18,6 +18,10 @@ The tutorial consists of multiple example projects, which can be used to learn d
 
 * Get started with data wrangling with real questionnaire data
 
+## [Multiple source data files](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
+
+* Learn how to load many (millions!) of data files into a single object
+* Create your own function
 
 Repository info:
 
