@@ -21,7 +21,7 @@ source("common/chunk_opts.R")
 # The Psychologist's data toolbox 2.0
 ### [Matti Vuorre](mailto:mv2521@columbia.edu)
 #### `r Sys.Date()`
-<hr>
+[![DOI](https://zenodo.org/badge/20002/mvuorre/toolbox.svg)](https://zenodo.org/badge/latestdoi/20002/mvuorre/toolbox)
 
 ## [Introduction](http://mvuorre.github.io/toolbox/introduction/introduction.html)
 
