@@ -1,5 +1,5 @@
 ---
-title: "toolbox_index"
+title: "Questionnaire data"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,10 @@ output:
     highlight: tomorrow night bright
     theme.chooser: true
     highlight.chooser: TRUE
-    menu: false
+    menu: true
+    custom.header: common/head.html
+bibliography: common/bibliography.bib
+csl: common/apa.csl
 ---
 
 ```{r, echo=F, warning=FALSE, message=FALSE}
@@ -33,3 +36,8 @@ source("common/chunk_opts.R")
 ## [Questionnaire data: Beginning data wrangling](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
 
 * Get started with data wrangling with real questionnaire data
+
+## [Multiple source data files](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
+
+* Learn how to load many (millions!) of data files into a single object
+* Create your own function
