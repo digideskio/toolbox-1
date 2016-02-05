@@ -25,26 +25,7 @@ The tutorial consists of multiple example projects, which can be used to learn d
 * Learn how to load many (millions!) of data files into a single object
 * Create your own function
 
-Repository info:
+# External links
 
-```
-toolbox
-|
-|-- introduction
-    |-- introduction.Rmd  # R-Markdown source
-    |-- introduction.html  # Introduction to Toolbox 2.0
-|
-|-- rrstudio
-    |-- rrstudio.Rmd
-    |-- rrstudio.html
-|
-|-- questionnaire
-    |-- questionnaire.Rmd
-    |-- questionnaire.html
-|
-|-- [more to come]
-|
-|-- common
-    |-- toolbox.bib  # References
-```
+[STAT 545 at UBC](http://stat545-ubc.github.io/) offers their entire course materials for free at GitHub, covering the toolbox materials in much greater detail. 
 

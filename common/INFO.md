@@ -6,12 +6,38 @@ The repository contains independent (but interlinked) R Markdown source files fo
 
 To view the output .html files in browser, just push changes from the master git branch to gh-pages.
 
+## Repository info:
+
+```
+toolbox
+|
+|-- introduction
+    |-- introduction.Rmd  # R-Markdown source
+    |-- introduction.html  # Introduction to Toolbox 2.0
+|
+|-- rrstudio
+    |-- rrstudio.Rmd
+    |-- rrstudio.html
+|
+|-- questionnaire
+    |-- questionnaire.Rmd
+    |-- questionnaire.html
+|
+|-- [more to come]
+|
+|-- common
+    |-- toolbox.bib  # References
+```
+
 # TODO
 
 ## Update to v1.0
 
 * Additional scenarios
 * Plotting
+* Links to 
+	* http://tryr.codeschool.com/
+	* http://tutorials.iq.harvard.edu/
 
 ## Obtain DOI
 

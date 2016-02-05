@@ -9,7 +9,7 @@ output:
     theme.chooser: true
     highlight.chooser: TRUE
     menu: true
-    custom.header: common/head.html
+    # custom.header: common/head.html  # Doesn't work at root level
 bibliography: common/bibliography.bib
 csl: common/apa.csl
 ---
