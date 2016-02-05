@@ -18,6 +18,9 @@ csl: common/apa.csl
 source("common/chunk_opts.R")
 ```
 
+<!-- Get bootstrap -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
 # The Psychologist's data toolbox 2.0
 ### [Matti Vuorre](mailto:mv2521@columbia.edu)
 #### `r Sys.Date()`
@@ -41,3 +44,7 @@ source("common/chunk_opts.R")
 
 * Learn how to load many (millions!) of data files into a single object
 * Create your own function
+
+<br><br>
+<a href="https://github.com/mvuorre/toolbox" class="btn btn-info" role="button">Source</a>
+
