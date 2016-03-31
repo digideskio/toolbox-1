@@ -3,23 +3,26 @@ title: "Questionnaire data"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output:
-  knitrBootstrap::bootstrap_document:
-    theme: simplex
-    highlight: tomorrow night bright
-    theme.chooser: true
-    highlight.chooser: TRUE
-    menu: true
-    custom.header: ../common/head.html
+  html_document:
+    theme: united
+    highlight: default
+    toc: true
+    toc_float: true
+    code_folding: show
+    fig_caption: true
+    number_section: true
+    includes:
+      in_header: ../common/head.html
 bibliography: ../common/bibliography.bib
 csl: ../common/apa.csl
 ---
 
 ```{r chunk_opts, echo=F, warning=FALSE, message=FALSE, results = 'hide'}
+library(knitrBootstrap)
 source("../common/chunk_opts.R")
 ```
 
-# Project: Personality Questionnaire Data
-#### `r Sys.Date()`
+# Introduction
 
 For this project we'll be using a real data set, consisting of 19,719 individual's responses to 50 questionnaire items that together constitute the Big Five personality scale. Additionally, each respondent provided their gender, age, race, native language and country. With this many respondents, items responded to, and categories by which we can split the responses, we can get answers to a rich set of questions. The data set is available [here](http://personality-testing.info/_rawdata/BIG5.zip), and you can complete the scale yourself on [this website](http://personality-testing.info/).
 
@@ -31,7 +34,7 @@ While there is no single way to organize a project that would fit every situatio
 
 We will be working with a fairly simple, but I think common, situation where we have one "spreadsheet" like data file, intend to keep this file on one computer, and produce figures and simple reports from the data. Therefore, we'll set out to define a clear folder structure for our files. A folder structure helps us keep track of our files, ensure that we know what are the inputs (never overwrite / edit the source data!) and how to turn the inputs into outputs. The folder structure I've chosen for this project is displayed below:
 
-```
+```bash
 toolbox
 |-- questionnaire
 |   |-- data
@@ -43,7 +46,7 @@ toolbox
 
 I view a clear folder structure as the first step toward a reproducible research project. By adhering to a simple scheme like this, my future collaborators--including myself!--will almost immediately know how to locate any files they need to do their jobs. If I end up collaborating with you, and your project looks like the figure on the left, below, I _will_ call you at 3am and ask you to fix it asap. The one on the right gives an idea of what a good organization might look like.
 
-<img src="images/bad_data_good_data.png", height=400px>
+<img src="images/bad_data_good_data.png" height="400px">
 
 If you downloaded all of the [Toolbox 2.0](https://mvuorre.github.io/toolbox/) materials, you already have this file structure ready under the root folder `/toolbox/`, and can now browse your way to these folders on your computer, and inspect their contents. 
 
@@ -178,7 +181,7 @@ We fed the `engnat`-by`race` table to `prop.table()`, and specified that we want
 
 This is taking a while! Are you still following? Let's take a step back and think about what the goal here is: We want to understand the data in front of us. In order to accomplish this, we must know how to effectively wrangle the data; to group it in various ways, to aggregate it at multiple levels of different grouping factors. We want to be able to quickly draw figures like the one I'll show below:
 
-```{r, echo=F}
+```{r, echo=F, fig.cap="Figure"}
 l <- mutate(d, 
        extraversion = (E1+E2+E3+E5+E6+E7+E8+E9+E10)/10,
        neuroticism = (N1+N2+N3+N5+N6+N7+N8+N9+N10)/10,
@@ -415,4 +418,5 @@ d %>% add_rownames("id") %>%
 ```
 
 # References
-<br>
+
+

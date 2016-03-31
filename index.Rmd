@@ -1,46 +1,47 @@
 ---
-title: "Questionnaire data"
+title: "The Psychologist's data toolbox 2.0"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output:
-  knitrBootstrap::bootstrap_document:
-    theme: simplex
-    highlight: tomorrow night bright
-    theme.chooser: true
-    highlight.chooser: TRUE
-    menu: true
-    # custom.header: common/head.html  # Doesn't work at root level
-bibliography: common/bibliography.bib
-csl: common/apa.csl
+  html_document:
+    theme: united
+    highlight: default
+    toc: false
+    toc_float: false
+    fig_caption: true
+    number_section: false
+    includes:
+      in_header: common/index_head.html
 ---
 
 ```{r, echo=F, warning=FALSE, message=FALSE}
 source("common/chunk_opts.R")
 ```
 
-<!-- Get bootstrap -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-# The Psychologist's data toolbox 2.0
-### [Matti Vuorre](mailto:mv2521@columbia.edu)
-#### `r Sys.Date()`
 [![DOI](https://zenodo.org/badge/20002/mvuorre/toolbox.svg)](https://zenodo.org/badge/latestdoi/20002/mvuorre/toolbox)
 
-## [Introduction](http://mvuorre.github.io/toolbox/introduction/introduction.html)
+Welcome to the Psychologist's data toolbox 2.0. This website contains educational materials on using [__R__](https://www.r-project.org/) and [__RStudio__](https://www.rstudio.com/) for effective data wrangling and visualization. In addition to introductory materials, there are tutorials for Psychology-specific data-analytic scenarios. Get started by clicking on the links below.
+
+# [Introduction](http://mvuorre.github.io/toolbox/introduction/introduction.html)
 
 * What is toolbox 2.0 and why do we need it?
 
-## [R and RStudio](http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html)
+# [R and RStudio](http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html)
 
 * Learn the basics of R and RStudio
     - No programming experience required
     - 100% success or money back guarantee
+    
+# [Importing data to R](http://mvuorre.github.io/toolbox/import/import.html)
 
-## [Questionnaire data: Beginning data wrangling](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
+* Import data to R
+* Display data in the console
+
+# [Questionnaire data: Beginning data wrangling](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
 
 * Get started with data wrangling with real questionnaire data
 
-## [Multiple source data files](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
+# [Multiple source data files](http://mvuorre.github.io/toolbox/questionnaire/questionnaire.html)
 
 * Learn how to load many (millions!) of data files into a single object
 * Create your own function
