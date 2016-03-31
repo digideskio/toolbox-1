@@ -1,6 +1,4 @@
-# Document information:
-# Created with knitrBootsrap (https://github.com/jimhester/knitrBootstrap)
-# install_github('jimhester/knitrBootstrap')
+# Common options for all documents
 library(knitr)
 library(gridExtra)
 library(countrycode)
@@ -11,13 +9,10 @@ library(ggthemes)
 library(reshape2)
 opts_chunk$set(fig.retina = 2,
                fig.align = 'center',
-               comment = "#",
                warning = F,
                message = F,
                fig.width=8,
-               cache = T,
-               bootstrap.thumbnail.size = 'col-md-6',
-               bootstrap.panel = FALSE)
+               cache = T)
 # options(digits = 2)
 theme_set(
     theme_minimal() + 

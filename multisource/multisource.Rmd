@@ -3,13 +3,16 @@ title: "Multiple source files"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output:
-  knitrBootstrap::bootstrap_document:
-    theme: simplex
-    highlight: tomorrow night bright
-    theme.chooser: true
-    highlight.chooser: TRUE
-    menu: true
-    custom.header: ../common/head.html
+  html_document:
+    theme: united
+    highlight: default
+    toc: true
+    toc_float: true
+    code_folding: show
+    fig_caption: true
+    number_section: true
+    includes:
+      in_header: ../common/head.html
 bibliography: ../common/bibliography.bib
 csl: ../common/apa.csl
 ---
@@ -30,9 +33,7 @@ split_write <- function(x) {
 sapply(names(c_list), split_write)
 ```
 
-# Project: Multiple source files
-## Questionnaire data with multiple source files
-#### `r Sys.Date()`
+# Introduction
 
 In this project, we'll learn to work with multiple source data files. We'll be using the same data as in the [questionnaire data project](../questionnaire/questionnaire.html), but this time begin with many files, instead of a single master spreadsheet. For beginners, I recommend first investigating the questionnaire data project.
 

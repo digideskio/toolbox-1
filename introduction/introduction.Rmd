@@ -1,15 +1,18 @@
 ---
-title: "Toolbox"
+title: "Introduction to the Psychologist's data toolbox 2.0"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output:
-  knitrBootstrap::bootstrap_document:
-    theme: simplex
-    highlight: tomorrow night bright
-    theme.chooser: true
-    highlight.chooser: TRUE
-    menu: true
-    custom.header: ../common/head.html
+  html_document:
+    theme: united
+    highlight: default
+    toc: true
+    toc_float: true
+    code_folding: show
+    fig_caption: true
+    number_section: true
+    includes:
+      in_header: ../common/head.html
 bibliography: ../common/bibliography.bib
 csl: ../common/apa.csl
 ---
@@ -18,8 +21,7 @@ csl: ../common/apa.csl
 source("../common/chunk_opts.R")
 ```
 
-# Introduction to the psychologist's data toolbox 2.0
-#### `r Sys.Date()`
+# Introduction 
 
 Many introductory statistics and research methods courses in psychology teach a particular workflow for moving from raw data to figures and statistical tests. This workflow heavily depends on two commercial tools: Microsoft Excel and IBM SPSS. Students of these courses are instructed to perform basic data manipulation tasks, such as renaming variables, aggregating data ("pivot tables"), subsetting data, etc., in Excel before proceeding to create figures (in Excel or SPSS) and perform statistical inference (usually in SPSS.)
 
@@ -37,7 +39,34 @@ I rely heavily on user-contributed packages to the R programming language, but m
 
 # This tutorial
 
-This tutorial consists of modules, where R is put to its proper use in data wrangling different types of data. Users who wish to execute the code as they follow along should download [this zip file](https://github.com/mvuorre/toolbox/archive/master.zip) and place its contents somewhere on their hard disk. This archive contains all the materials required to reproduce every exercise and command presented on these pages, and can also be used to prepare a custome version of these pages.
+This tutorial consists of modules, where R is put to its proper use in data wrangling different types of data. Users who wish to execute the code as they follow along should download [this zip file](https://github.com/mvuorre/toolbox/archive/master.zip) and place its contents somewhere on their hard disk. This archive contains all the materials required to reproduce every exercise and command presented on these pages, and can also be used to prepare a custome version of these pages. After downloading the zip file, extract its contents in an appropriate location on your hard drive, say your Documents folder. The unzipped folder is called `toolbox-master`, but you should rename it to `toolbox` (my apologies, this is a GitHub quirk.) Assuming you've extracted the folder from the zip file into your Documents folder, you now have the following file structure on your computer, under the Documents folder:
+
+```bash
+toolbox
+|
+|-- introduction
+    |-- introduction.Rmd  # R-Markdown source
+    |-- introduction.html  # Introduction to Toolbox 2.0
+|
+|-- rrstudio
+    |-- rrstudio.Rmd
+    |-- rrstudio.html
+|
+|-- import
+    |-- import.Rmd
+    |-- import.html
+|
+|-- questionnaire
+    |-- questionnaire.Rmd
+    |-- questionnaire.html
+|
+|-- ...
+|
+|-- common
+    |-- toolbox.bib  # References
+```
+
+Each `.Rmd` file contains blocks of R code that you can execute on your own computer. Every line of code within these tutorials will be in those files, so you can execute the code while reading the tutorials.
 
 # Further reading and references
 
