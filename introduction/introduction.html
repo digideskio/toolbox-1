@@ -11,7 +11,7 @@
 
 <meta name="author" content="Matti Vuorre" />
 
-<meta name="date" content="2016-03-31" />
+<meta name="date" content="2016-04-01" />
 
 <title>Introduction to the Psychologist’s data toolbox 2.0</title>
 
@@ -34,7 +34,7 @@
 <h1 class="tab">The Psychologist's data toolbox 2.0</h1>
 <h3 class="tab"><a href="mailto:mv2521@columbia.edu">Matti Vuorre</a></h3>
 <!--navigation header for pages-->
-<p class="tab"><a href="../index.html">Main</a> | <a href="../introduction/introduction.html">Introduction</a> | <a href="../rrstudio/rrstudio.html">R and RStudio</a> | <a href="../questionnaire/questionnaire.html">Questionnaire data</a> | <a href="../multisource/multisource.html">Multiple source files</a> | <a href="https://github.com/mvuorre/toolbox">[source]</a></p>
+<p class="tab"><a href="../index.html">Main</a> | <a href="../introduction/introduction.html">Introduction</a> | <a href="../rrstudio/rrstudio.html">R and RStudio</a> | <a href="../import/import.html">Import data to R</a> | <a href="../questionnaire/questionnaire.html">Questionnaire data</a> | <a href="../multisource/multisource.html">Multiple source files</a> | <a href="https://github.com/mvuorre/toolbox">[source]</a></p>
 
 <hr>
 
@@ -227,7 +227,7 @@ div.tocify {
 
 <h1 class="title">Introduction to the Psychologist’s data toolbox 2.0</h1>
 <h4 class="author"><em>Matti Vuorre</em></h4>
-<h4 class="date"><em>2016-03-31</em></h4>
+<h4 class="date"><em>2016-04-01</em></h4>
 
 </div>
 
@@ -246,7 +246,30 @@ div.tocify {
 </div>
 <div id="this-tutorial" class="section level1">
 <h1><span class="header-section-number">3</span> This tutorial</h1>
-<p>This tutorial consists of modules, where R is put to its proper use in data wrangling different types of data. Users who wish to execute the code as they follow along should download <a href="https://github.com/mvuorre/toolbox/archive/master.zip">this zip file</a> and place its contents somewhere on their hard disk. This archive contains all the materials required to reproduce every exercise and command presented on these pages, and can also be used to prepare a custome version of these pages.</p>
+<p>This tutorial consists of modules, where R is put to its proper use in data wrangling different types of data. Users who wish to execute the code as they follow along should download <a href="https://github.com/mvuorre/toolbox/archive/master.zip">this zip file</a> and place its contents somewhere on their hard disk. This archive contains all the materials required to reproduce every exercise and command presented on these pages, and can also be used to prepare a custome version of these pages. After downloading the zip file, extract its contents in an appropriate location on your hard drive, say your Documents folder. The unzipped folder is called <code>toolbox-master</code>, but you should rename it to <code>toolbox</code> (my apologies, this is a GitHub quirk.) Assuming you’ve extracted the folder from the zip file into your Documents folder, you now have the following file structure on your computer, under the Documents folder:</p>
+<pre class="bash"><code>toolbox
+|
+|-- introduction
+    |-- introduction.Rmd  # R-Markdown source
+    |-- introduction.html  # Introduction to Toolbox 2.0
+|
+|-- rrstudio
+    |-- rrstudio.Rmd
+    |-- rrstudio.html
+|
+|-- import
+    |-- import.Rmd
+    |-- import.html
+|
+|-- questionnaire
+    |-- questionnaire.Rmd
+    |-- questionnaire.html
+|
+|-- ...
+|
+|-- common
+    |-- toolbox.bib  # References</code></pre>
+<p>Each <code>.Rmd</code> file contains blocks of R code that you can execute on your own computer. Every line of code within these tutorials will be in those files, so you can execute the code while reading the tutorials.</p>
 </div>
 <div id="further-reading-and-references" class="section level1">
 <h1><span class="header-section-number">4</span> Further reading and references</h1>
