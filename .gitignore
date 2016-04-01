@@ -1,8 +1,14 @@
+# Ignore everything
 *
+
+# Don't ignore these files
 !.gitignore
 !*.R
 !*.md
 !*.Rmd
 !*.py
 !*.html
-!import/
+# Even in subdirectories
+!*/
+*_files/
+*_cache/
