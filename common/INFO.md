@@ -34,10 +34,10 @@ toolbox
 ## Update to v1.0
 
 * Additional scenarios
+* Merge multisource to importing data
+* Data types
 * Plotting
 * Links to 
 	* http://tryr.codeschool.com/
 	* http://tutorials.iq.harvard.edu/
-
-## Obtain DOI
 
