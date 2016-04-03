@@ -8,6 +8,7 @@
 !*.Rmd
 !*.py
 !*.html
+!*.yaml
 # Even in subdirectories
 !*/
 *_files/

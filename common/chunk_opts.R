@@ -12,9 +12,11 @@ opts_chunk$set(fig.retina = 2,
                warning = F,
                message = F,
                fig.width=8,
-               cache = T)
+               cache = F,
+               fig.cap = T)
 # options(digits = 2)
 theme_set(
     theme_minimal() + 
         theme(panel.grid.minor = element_blank(),
-              legend.position = "bottom"))
+              legend.position = "bottom")
+    )
