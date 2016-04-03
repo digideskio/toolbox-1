@@ -1,0 +1,12 @@
+html_document:
+  theme: sandstone
+  highlight: default
+  toc: true
+  toc_float: true
+  code_folding: show
+  fig_caption: true
+  number_section: false
+  self_contained: true
+  includes:
+    # in_header: ../common/head.html  # Replaced by navbar
+    after_body: ../common/foot.html
