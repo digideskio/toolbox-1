@@ -12,10 +12,31 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a href="introduction.html">Introduction</a></li>
-        <li><a href="rrstudio.html">R & RStudio</a></li>
-        <li><a href="import.html">Import data to R</a></li>
-        <li><a href="questionnaire.html">Questionnaire</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Introduction<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="introduction.html">Toolbox 2.0</a></li>
+            <li><a href="rrstudio.html">R and RStudio</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Importing data to R<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="import.html">.csv (spreadsheet)</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Wrangling data<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="questionnaire.html">Questionnaire data</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Visualizing data<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">(coming soon)</a></li>
+          </ul>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="https://github.com/mvuorre/toolbox">Source</a></li>
