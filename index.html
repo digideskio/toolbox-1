@@ -7,7 +7,7 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
-<meta name="viewport" content="width=device-width, initial-scale=1">
+
 
 <meta name="author" content="Matti Vuorre" />
 
@@ -178,7 +178,7 @@ $(document).ready(function () {
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Visualizing data<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">(coming soon)</a></li>
+            <li><a href="plotting.html">Visualizing data in R</a></li>
           </ul>
         </li>
       </ul>
@@ -199,34 +199,48 @@ $(document).ready(function () {
 </div>
 
 
-<p>Welcome to the Psychologist’s data toolbox 2.0. This website contains educational materials on using <a href="https://www.r-project.org/"><strong>R</strong></a> and <a href="https://www.rstudio.com/"><strong>RStudio</strong></a> for effective data wrangling and visualization. In addition to introductory materials, there are tutorials for Psychology-specific data-analytic scenarios. Get started by clicking on the links below.</p>
-<div id="introduction" class="section level1">
-<h1><a href="introduction.html">Introduction</a></h1>
+<p>Welcome to the Psychologist’s data toolbox 2.0. This website contains educational materials on using <a href="https://www.r-project.org/"><strong>R</strong></a> and <a href="https://www.rstudio.com/"><strong>RStudio</strong></a> for effective data wrangling and visualization. In addition to introductory materials, there are tutorials for Psychology-specific data-analytic scenarios. Get started by clicking on the menu items above.</p>
+<p>For first-time R users, I recommend reading the sections of this website in order (from left to right in the above navigation bar.) First, you should read the <a href="introduction.html">introduction</a>, and then <a href="rrstudio.html">get to know the tools</a>. When you are familiar with the RStudio environment, common steps in the data-analytic workflow are covered in their typical order. If you already know how to import data, for example, skip that section and move right on to the next topics.</p>
+<ul>
+<li><a href="introduction.html">Introduction</a>
 <ul>
 <li>What is toolbox 2.0 and why do we need it?</li>
-</ul>
-</div>
-<div id="r-and-rstudio" class="section level1">
-<h1><a href="rrstudio.html">R and RStudio</a></h1>
+</ul></li>
+<li><a href="rrstudio.html">R and RStudio</a>
 <ul>
 <li>Learn the basics of R and RStudio
 <ul>
 <li>No programming experience required</li>
 <li>100% success or money back guarantee</li>
 </ul></li>
-</ul>
-</div>
-<div id="importing-data-to-r" class="section level1">
-<h1><a href="import.html">Importing data to R</a></h1>
+</ul></li>
+<li><a href="import.html">Importing data to R</a>
 <ul>
 <li>How to get data files to R</li>
-</ul>
-</div>
-<div id="data-wrangling-questionnaire-data" class="section level1">
-<h1><a href="questionnaire.html">Data wrangling: Questionnaire data</a></h1>
+</ul></li>
+<li><a href="questionnaire.html">Data wrangling</a>
 <ul>
 <li>Get started with data wrangling using real questionnaire data</li>
+</ul></li>
+<li><a href="plotting.html">Data visualization</a>
+<ul>
+<li>Create common data visualizations in R</li>
+</ul></li>
 </ul>
+<p>Following data visualization, you would typically move to modelling the data, but this topic is outside the scope of these tutorials. I recommend reading a good textbook <span class="citation">(e.g. Kruschke, 2014; Maindonald &amp; Braun, 2010; McElreath, 2016)</span>.</p>
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+<div id="refs" class="references">
+<div id="ref-kruschke_doing_2014">
+<p>Kruschke, J. K. (2014). <em>Doing bayesian data analysis: A tutorial introduction with r</em> (2nd Edition). Burlington, MA: Academic Press.</p>
+</div>
+<div id="ref-maindonald_data_2010">
+<p>Maindonald, J., &amp; Braun, W. J. (2010). <em>Data analysis and graphics using r: An example-based approach</em> (Vol. 10). Cambridge University Press.</p>
+</div>
+<div id="ref-mcelreath_statistical_2016">
+<p>McElreath, R. (2016). <em>Statistical rethinking: A bayesian course with examples in r and stan</em>. CRC Press.</p>
+</div>
+</div>
 </div>
 
 <!DOCTYPE HTML>
@@ -242,7 +256,7 @@ $(document).ready(function () {
 </style>
 <hr>
 <p class="center">
-<a href="https://zenodo.org/badge/latestdoi/20002/mvuorre/toolbox"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzQiIGhlaWdodD0iMjAiPjxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDI9IjAiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiYmIiIHN0b3Atb3BhY2l0eT0iLjEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iLjEiLz48L2xpbmVhckdyYWRpZW50PjxtYXNrIGlkPSJhIj48cmVjdCB3aWR0aD0iMTc0IiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPjwvbWFzaz48ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDMzdjIwSDB6Ii8+PHBhdGggZmlsbD0iIzAwN2VjNiIgZD0iTTMzIDBoMTQxdjIwSDMzeiIvPjxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoMTc0djIwSDB6Ii8+PC9nPjxnIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJEZWphVnUgU2FucyxWZXJkYW5hLEdlbmV2YSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjExIj48dGV4dCB4PSIxNi41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+RE9JPC90ZXh0Pjx0ZXh0IHg9IjE2LjUiIHk9IjE0Ij5ET0k8L3RleHQ+PHRleHQgeD0iMTAyLjUiIHk9IjE1IiBmaWxsPSIjMDEwMTAxIiBmaWxsLW9wYWNpdHk9Ii4zIj4xMC41MjgxL3plbm9kby40NDc2OTwvdGV4dD48dGV4dCB4PSIxMDIuNSIgeT0iMTQiPjEwLjUyODEvemVub2RvLjQ0NzY5PC90ZXh0PjwvZz48L3N2Zz4=" alt="DOI"></a>
+<a href="https://zenodo.org/badge/latestdoi/20002/mvuorre/toolbox"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNzAiIGhlaWdodD0iMjAiPjxsaW5lYXJHcmFkaWVudCBpZD0iYiIgeDI9IjAiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNiYmIiIHN0b3Atb3BhY2l0eT0iLjEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3Atb3BhY2l0eT0iLjEiLz48L2xpbmVhckdyYWRpZW50PjxtYXNrIGlkPSJhIj48cmVjdCB3aWR0aD0iMTcwIiBoZWlnaHQ9IjIwIiByeD0iMyIgZmlsbD0iI2ZmZiIvPjwvbWFzaz48ZyBtYXNrPSJ1cmwoI2EpIj48cGF0aCBmaWxsPSIjNTU1IiBkPSJNMCAwaDMxdjIwSDB6Ii8+PHBhdGggZmlsbD0iIzAwN2VjNiIgZD0iTTMxIDBoMTM5djIwSDMxeiIvPjxwYXRoIGZpbGw9InVybCgjYikiIGQ9Ik0wIDBoMTcwdjIwSDB6Ii8+PC9nPjxnIGZpbGw9IiNmZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJEZWphVnUgU2FucyxWZXJkYW5hLEdlbmV2YSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjExIj48dGV4dCB4PSIxNS41IiB5PSIxNSIgZmlsbD0iIzAxMDEwMSIgZmlsbC1vcGFjaXR5PSIuMyI+RE9JPC90ZXh0Pjx0ZXh0IHg9IjE1LjUiIHk9IjE0Ij5ET0k8L3RleHQ+PHRleHQgeD0iOTkuNSIgeT0iMTUiIGZpbGw9IiMwMTAxMDEiIGZpbGwtb3BhY2l0eT0iLjMiPjEwLjUyODEvemVub2RvLjQ4OTY1PC90ZXh0Pjx0ZXh0IHg9Ijk5LjUiIHk9IjE0Ij4xMC41MjgxL3plbm9kby40ODk2NTwvdGV4dD48L2c+PC9zdmc+" alt="DOI"></a>
 </p>
 <br>
 

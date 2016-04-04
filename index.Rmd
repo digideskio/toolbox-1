@@ -10,6 +10,8 @@ output:
     includes:
       # in_header: common/index_head.html
       after_body: common/foot.html
+bibliography: common/bibliography.bib
+csl: common/apa.csl
 ---
 
 ```{r, echo=F, warning=FALSE, message=FALSE}
@@ -18,23 +20,21 @@ source("common/chunk_opts.R")
 
 Welcome to the Psychologist's data toolbox 2.0. This website contains educational materials on using [__R__](https://www.r-project.org/) and [__RStudio__](https://www.rstudio.com/) for effective data wrangling and visualization. In addition to introductory materials, there are tutorials for Psychology-specific data-analytic scenarios. Get started by clicking on the menu items above.
 
-For first-time R users, I recommend reading the sections of this website in order (from left to right in the above navigation bar.) After getting to know the tools, the topics are introduced following a typical data-analytic workflow: From importing data to data wrangling visualization.
+For first-time R users, I recommend reading the sections of this website in order (from left to right in the above navigation bar.) First, you should read the [introduction](introduction.html), and then [get to know the tools](rrstudio.html). When you are familiar with the RStudio environment, common steps in the data-analytic workflow are covered in their typical order. If you already know how to import data, for example, skip that section and move right on to the next topics.
 
-# [Introduction](introduction.html)
+* [Introduction](introduction.html)
+    * What is toolbox 2.0 and why do we need it?
+* [R and RStudio](rrstudio.html)
+    * Learn the basics of R and RStudio
+        - No programming experience required
+        - 100% success or money back guarantee
+* [Importing data to R](import.html)
+    * How to get data files to R
+* [Data wrangling](questionnaire.html)
+    * Get started with data wrangling using real questionnaire data
+* [Data visualization](plotting.html)
+    * Create common data visualizations in R
 
-* What is toolbox 2.0 and why do we need it?
+Following data visualization, you would typically move to modelling the data, but this topic is outside the scope of these tutorials. I recommend reading a good textbook [e.g. @kruschke_doing_2014; @maindonald_data_2010; @mcelreath_statistical_2016]. 
 
-# [R and RStudio](rrstudio.html)
-
-* Learn the basics of R and RStudio
-    - No programming experience required
-    - 100% success or money back guarantee
-    
-# [Importing data to R](import.html)
-
-* How to get data files to R
-
-# [Data wrangling: Questionnaire data](questionnaire.html)
-
-* Get started with data wrangling using real questionnaire data
-
+# References

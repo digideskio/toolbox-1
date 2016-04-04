@@ -33,11 +33,7 @@ It's important to recognize that R only looks for external files in the current 
 
 <img src="images/cwd.png" alt="cwd" width="400">
 
-```{r print_cwd}
-getwd()
-```
-
-Your working directory will be slightly different, because the default printout includes the username and other preceding folders (in my case, `/Users/Matti/github/`), but we need not be concerned of this here.
+Your working directory will be slightly different, because the default printout includes the username and other preceding folders.
 
 ## Importing the data file
 

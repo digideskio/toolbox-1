@@ -1,15 +1,3 @@
-# Ignore everything
-*
-
-# Don't ignore these files
-!.gitignore
-!*.R
-!*.md
-!*.Rmd
-!*.py
-!*.html
-!*.yaml
-# Even in subdirectories
-!*/
+# Ignore knitr build files
 *_files/
 *_cache/
