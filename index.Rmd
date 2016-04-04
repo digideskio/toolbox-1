@@ -32,7 +32,7 @@ Welcome to the Psychologist's data toolbox 2.0. This website contains educationa
 
 * How to get data files to R
 
-# [Questionnaire data: Beginning data wrangling](questionnaire.html)
+# [Data wrangling: Questionnaire data](questionnaire.html)
 
-* Get started with data wrangling with real questionnaire data
+* Get started with data wrangling using real questionnaire data
 

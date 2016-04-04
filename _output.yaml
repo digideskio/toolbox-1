@@ -1,6 +1,6 @@
 html_document:
-  theme: sandstone
-  highlight: default
+  theme: cosmo
+  highlight: kate
   toc: true
   toc_float: true
   code_folding: show

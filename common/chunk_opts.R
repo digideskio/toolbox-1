@@ -12,7 +12,7 @@ opts_chunk$set(fig.retina = 2,
                warning = F,
                message = F,
                fig.width=8,
-               cache = F,
+               cache = T,
                fig.cap = T)
 # options(digits = 2)
 theme_set(
