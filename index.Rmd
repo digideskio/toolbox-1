@@ -16,7 +16,9 @@ output:
 source("common/chunk_opts.R")
 ```
 
-Welcome to the Psychologist's data toolbox 2.0. This website contains educational materials on using [__R__](https://www.r-project.org/) and [__RStudio__](https://www.rstudio.com/) for effective data wrangling and visualization. In addition to introductory materials, there are tutorials for Psychology-specific data-analytic scenarios. Get started by clicking on the links below.
+Welcome to the Psychologist's data toolbox 2.0. This website contains educational materials on using [__R__](https://www.r-project.org/) and [__RStudio__](https://www.rstudio.com/) for effective data wrangling and visualization. In addition to introductory materials, there are tutorials for Psychology-specific data-analytic scenarios. Get started by clicking on the menu items above.
+
+For first-time R users, I recommend reading the sections of this website in order (from left to right in the above navigation bar.) After getting to know the tools, the topics are introduced following a typical data-analytic workflow: From importing data to data wrangling visualization.
 
 # [Introduction](introduction.html)
 
