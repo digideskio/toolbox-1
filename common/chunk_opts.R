@@ -14,9 +14,9 @@ opts_chunk$set(fig.retina = 2,
                fig.width=8,
                cache = T,
                fig.cap = T)
-# options(digits = 2)
 theme_set(
     theme_minimal() + 
         theme(panel.grid.minor = element_blank(),
-              legend.position = "bottom")
+              legend.position = "bottom",
+              panel.background = element_rect(fill=NA, colour="grey50"))
     )

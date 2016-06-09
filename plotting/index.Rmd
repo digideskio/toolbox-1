@@ -1,5 +1,5 @@
 ---
-title: "Data visualization with R"
+title: "Visualizing data with R"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
 output: html_document
@@ -9,26 +9,18 @@ csl: ../common/apa.csl
 
 ```{r setup, echo=F, warning=FALSE, message=FALSE, results = 'hide'}
 source("../common/chunk_opts.R")
-opts_chunk$set(fig.width = 4, fig.height = 3)  # Smaller defaults
+opts_chunk$set(fig.width = 4, fig.height = 3)
 ```
 
-In this tutorial, we'll cover plotting data with R. I assume that you are familiar with the previous tutorials (using R and RStudio to import and wrangle data.) and are now ready to create visual representations of data. 
-
-Previously, we learned how to print data and summaries of data (means, etc.) in the R console. The logic behind plotting data (summaries) in R is to pass those objects, which you previously printed in the console, to plotting functions. The first step in plotting data, after importing it to R, is then to create the appropriate object that will be plotted. Following this logic, I'll begin by drawing univariate plots; that is, figures that display information contained in a single vector of numbers, such as a variable that contains the ages of participants in a study. After univariate plots, we'll move on to plotting multiple variables simultaneously, resulting in bivariate plots. 
-
-# The data
-
-In this tutorial, we will use an openly available [data set](http://openpsychologydata.metajnl.com/articles/10.5334/jopd.ai/#) on mental rotation of 3D figures [@ganis_new_2015]. In this study, 54 participants observed two 3D shapes on each trial, and judged whether the shapes were the same or not:
+In this tutorial, we will use an openly available [data set](http://openpsychologydata.metajnl.com/articles/10.5334/jopd.ai/#) on mental rotation of 3D figures [@ganis_new_2015] to learn how to visualize data in R. In this study, 54 participants observed two 3D shapes on each trial, and judged whether the shapes were the same or not:
 
 >The object on the left is always one of the 48 baseline objects (0 degree angular disparity). For the ‘same’ stimuli, the object on the right is the same as the one on the left, but is rotated around the vertical axis by 50, 100 or 150 degrees clockwise (when observed from above). [@ganis_new_2015]
 
 <a href="http://openpsychologydata.metajnl.com/articles/10.5334/jopd.ai/#"><img src="images/Fig01_web.jpg" alt="stimulus" height="400" width="230"></a>
 
-Each participant completed 96 trials, and reaction time was also recorded on each trial. We also have the participants' age and gender in a separate data file. The authors removed some trials as outliers, but here we include everything so we have more data to plot.
-
 ## Importing data
 
-The data files are in `toolbox/plotting/Behavioural_data/` as separate Excel spreadsheets for each participant. I've used the function below to combine all the participant-specific files into one master data file, which is also in the data folder. This function is a little bit complicated because the Excel files aren't simple to work with, and some data was left out of the spreadsheets (subject numbers.) You can investigate the code below, or simply move on to loading the master data file.
+The data files are in `toolbox/plotting/Behavioural_data/` as separate Excel spreadsheets for each participant. I've used the function below to combine all the participant-specific files into one master data file, which is also in the data folder. This function is a little complicated because the Excel files aren't simple to work with, and some data was left out of the spreadsheets (subject numbers.) You can investigate the code below, or simply move on to loading the master data file.
 
 ```{r source_batch, eval = F}
 library(xlsx)
@@ -49,7 +41,7 @@ batch_read <- function(path, extension){
     # Create IDs from filename: Always include data in the file, not filename
     d$Subject <- rep(fnames, each = 96)
     d$Subject <- as.integer(unlist(regmatches(d$Subject, gregexpr('[0-9]+', d$Subject))))
-    d
+    d <- select(d, Subject, everything())
 }
 d <- batch_read("Behavioural_data/", ".xlsx")
 write_csv(d, "Behavioural_data/master.csv")
@@ -58,85 +50,136 @@ write_csv(d, "Behavioural_data/master.csv")
 I'll read the combined data file and demographic information file into two separate objects. I'm using `read_csv()` instead of `read.csv()` because the resulting object is prettier when printed out in the console. Similarly, I'll convert the demographic data into a `data_frame` from the original `data.frame`:
 
 ```{r}
+library(xlsx)
 d <- read_csv("Behavioural_data/master.csv")  # Data
 dem <- read.xlsx("Behavioural_data/demographics.xlsx", 
                  sheetIndex = 1, stringsAsFactors = F)  # Demographics
 dem <- as_data_frame(dem)
 ```
 
-## Manipulating data
+I'll then remove rows with missing observations, and display the data:
 
-When writing code, I always forget whether my variable names are in Upper Case or lower case, or whether words are combined with.dots or with_underscores. To avoid confusion, I'll change the variable names to lower case, and clean up the names a bit
+```{r}
+d <- na.omit(d)
+d
+```
+
+I'll change the variable names to lower case, and rename time to rt, and correct.incorrect to accuracy.
 
 ```{r}
 names(d) <- tolower(names(d))
 names(dem) <- tolower(names(dem))
-names(d)[7] <- "accuracy"  # correct.incorrect
+names(d)[4] <- "rt"  # time
+names(d)[8] <- "accuracy"  # correct.incorrect
 ```
 
-Now that the data is imported and sufficiently clean, we'll begin with a quick visual investigation of the data using base-R graphics. After this initial investigation, we'll create advanced graphics with the ggplot2 package [@wickham_ggplot2:_2009].
-
-# Base-R plots {.tabset}
-
-## Histogram of reaction time
-
-```{r, fig.cap="Reaction time histogram."}
-hist(d$time)
-```
-
-## Reaction times for angles
-
-```{r, fig.cap = "Reaction times for different angular rotations."}
-boxplot(d$time ~ d$angle)
-```
-
-## Histogram of age
-
-```{r, fig.cap = "Histogram of age with options."}
-hist(dem$age, 
-     breaks = 6,
-     labels = T,
-     main = "Age distribution of participants",
-     xlab = "Age",
-     ylim = c(0, 25),
-     col = "grey70")
-```
-
-Here I've changed a few of the various options to `hist()`, by manually specifying the number of breaks in the histogram, adding labels (numbers on top of each bar), some text, and changing the y-axis limits, and colors. By the way, the `breaks` option does not apply exactly the number of breaks that you've specified, but instead R's best guess of "pretty" values near to the number you've specified.
-
-## Barplot of gender
-
-```{r, results = "hold", fig.show = "hold", fig.cap = "Counts of females and males."}
-table(dem$gender)
-barplot(table(dem$gender))
-```
-
-Because gender is (in this data set) a dichotomous variable, an effective way to display this information is with a histogram, but instead of a continuous X-axis value, there are now two categorical bins. In order to create this plot, we need to first compute the summary statistic that is to be plotted, that is the count of observations in each category. The quickest way to do this is to use `table()`, and pass the resulting counts to `barplots()`
-
-# Advanced plots with ggplot2 
-
-To create more advanced graphics, we'll switch to using the ggplot2 package
+We might want to use the participants' demographic information when drawing the figures. This will be much easier if the information is contained in the same data frame as the actual data, so I'll join the data frames together:
 
 ```{r}
 d <- right_join(dem, d)
-smeans <- group_by(d, subject) %>%
-    summarize(age = unique(age),
-              rt = mean(time, na.rm = T),
-              pcorr = mean(accuracy))
-smeans
+d <- select(d, -condition, -response, -correct)  # We don't need these variables
+d
 ```
+
+Now that the data is imported and sufficiently clean, we can start drawing figures. Let's begin by investigating how reaction times are distributed across the angular disparities.
+
+# Reaction time figures {.tabset}
+
+## Histogram
+
+```{r, fig.cap="Reaction time histogram."}
+hist(d$rt)
+```
+
+The `hist()` function provides easy access to drawing histograms, and can be customized with various options. See the help page for the function by typing `?hist` to the R console. 
 
 ## Boxplot
 
-```{r}
-boxplot(dem$age ~ dem$gender)
+```{r, fig.cap = "Reaction times for different angular rotations."}
+boxplot(d$rt ~ d$angle, main = "Reaction times", xlab = "Angular disparity", ylab = "RT (ms)")
 ```
+
+Boxplots are great for displaying summaries of multiple distributions simultaneously. 
+
+# ggplot2
+
+In the previous examples, we used `hist()` and `boxplot()` to draw the figures. These functions are included in the default R distribution, and therefore do not need to be installed separately. However, there are various add-on packages to R specifically for the purpose of drawing figures. In the remainder of this tutorial, we focus on one very popular plotting package, an R implementation of the grammar of graphics, __ggplot2__ [@wickham_ggplot2:_2009].
+
+ggplot2 has its own unique syntax for mapping aesthetics to data, and is a little complicated at first, compared to default R plotting functions, such as the ones covered above. The upshot is that ggplot2's syntax is consistent, and can be used to create very complex graphics. Every ggplot2 graphic requires the user to input a data frame, specify which variables are mapped to which dimension of the graphic (x-axis, y-axis, color, size, transparency, etc.), and the geometric object of the data. Let's take a look at how this works in practice by creating a scatterplot of reaction time on trial number.
 
 ## Scatterplot
 
-```{r}
-plot(smeans$age, smeans$rt)
+```{r ggplot-rt-trial-scatter-1, fig.cap = "Example ggplot2 scatterplot."}
+ggplot(data = d, aes(x = trial, y = rt)) + geom_point()
 ```
+
+This line of code illustrates the fundamentals of drawing figures with ggplot2. The first argument to `ggplot()` is the data frame that contains the relevant variables and values. Second is the `aes()` function, that contains a list of variables mapped to the geometric and aesthetic dimensions of the plot, such as the x and y axes. Finally, we decided to display the variables using points, for a simple scatterplot, using `geom_point()`. Geoms are ggplot2's way of defining what type of plot you are drawing, and I recommend you take a look at the [website listing all the currently available geoms](http://docs.ggplot2.org/current/). Note how the `geom_point()` was added to the ggplot using `+`. This suggests that we can add multiple geoms to one plot, such as a regression line on top of the scatterplot:
+
+```{r ggplot-rt-trial-scatter-2, fig.cap = "Example ggplot2 scatterplot with linear regression line."}
+ggplot(data = d, aes(x = trial, y = rt)) + 
+    geom_point() +
+    geom_smooth(method = "lm")
+```
+
+`geom_smooth()` can draw different types of model fits, and here we specified a linear regression model.
+
+Next, let's try to draw the proportions of correct responses for each angular disparity. Barplots are commonly used to display continuous outcomes split by a categorical variable, but [bar graphs suck](https://garstats.wordpress.com/2016/03/09/one-simple-step-to-improve-statistical-inferences/), and we'll therefore explore various alternative displays for the proportions.
+
+## Plotting proportions {.tabset}
+
+We begin by computing the proportions correct for each participant and angle using familiar commands from the __dplyr__ package [@wickham_dplyr:_2015]. We'll also compute group averages and save them into another data frame.
+
+```{r compute-pcorr}
+props_subj <- group_by(d, subject, angle) %>% summarize(pcorr = mean(accuracy))
+props_avg <- group_by(d, angle) %>% summarize(pcorr = mean(accuracy))
+```
+
+We can then plot the data from these data frames, using various geoms
+
+### Points
+
+```{r ggplot-pcorr-plot-1a, fig.cap = "Proportion correct."}
+ggplot(props_subj, aes(x=angle, y=pcorr)) +
+    geom_point()
+```
+
+It's hard to see the individual points because of overlap, so a little jitter might help.
+
+### Points (jitter)
+
+```{r ggplot-pcorr-plot-1b, fig.cap = "Proportion correct."}
+ggplot(props_subj, aes(x=angle, y=pcorr)) +
+    geom_point(position = position_jitter(h = 0, w = 10))
+```
+
+Here we adjusted the individual points' positions by jittering them horizontally. The `w = 10` argument specified the maximum width of the jitter, and `h = 0` specified zero height for the jitter.
+
+### Boxplots
+
+```{r ggplot-pcorr-plot-2, fig.cap = "Proportion correct."}
+ggplot(props_subj, aes(x=angle, y=pcorr, group=angle)) +
+    geom_boxplot()
+```
+
+Because angle is a continuous variable in the data frame, I specified `group=angle` to draw a box for each angle.
+
+### Violin plot
+
+```{r ggplot-pcorr-plot-3, fig.cap = "Proportion correct."}
+ggplot(props_subj, aes(x=angle, y=pcorr, group=angle)) +
+    geom_violin(col = NA, fill = "skyblue1")
+```
+
+### Combined
+
+```{r ggplot-pcorr-plot-4, fig.cap = "Proportion correct."}
+ggplot(props_subj, aes(x=angle, y=pcorr, group=angle)) +
+    geom_violin(col = NA, fill = "skyblue1") +
+    geom_point(position = position_jitter(h = 0, w = 10)) +
+    geom_boxplot(width = 5, outlier.color = NA, alpha = .5)
+```
+
+Well this plot sure is ugly, but I wanted to point out that you can combine geoms within a single plot.
 
 # Further reading
 
@@ -150,3 +193,5 @@ Online tutorials:
 Books:
 
 * Graphical Data Analysis with R [@unwin_graphical_2015]
+
+# References
