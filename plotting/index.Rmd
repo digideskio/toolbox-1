@@ -7,12 +7,146 @@ bibliography: ../common/bibliography.bib
 csl: ../common/apa.csl
 ---
 
-```{r chunk_opts, echo=F, warning=FALSE, message=FALSE, results = 'hide'}
+```{r setup, echo=F, warning=FALSE, message=FALSE, results = 'hide'}
 source("../common/chunk_opts.R")
+opts_chunk$set(fig.width = 4, fig.height = 3)  # Smaller defaults
 ```
 
+In this tutorial, we'll cover plotting data with R. I assume that you are familiar with the previous tutorials (using R and RStudio to import and wrangle data.) and are now ready to create visual representations of data. 
 
+Previously, we learned how to print data and summaries of data (means, etc.) in the R console. The logic behind plotting data (summaries) in R is to pass those objects, which you previously printed in the console, to plotting functions. The first step in plotting data, after importing it to R, is then to create the appropriate object that will be plotted. Following this logic, I'll begin by drawing univariate plots; that is, figures that display information contained in a single vector of numbers, such as a variable that contains the ages of participants in a study. After univariate plots, we'll move on to plotting multiple variables simultaneously, resulting in bivariate plots. 
 
-# Univariate plots
+# The data
 
-# Bivariate plots
+In this tutorial, we will use an openly available [data set](http://openpsychologydata.metajnl.com/articles/10.5334/jopd.ai/#) on mental rotation of 3D figures [@ganis_new_2015]. In this study, 54 participants observed two 3D shapes on each trial, and judged whether the shapes were the same or not:
+
+>The object on the left is always one of the 48 baseline objects (0 degree angular disparity). For the ‘same’ stimuli, the object on the right is the same as the one on the left, but is rotated around the vertical axis by 50, 100 or 150 degrees clockwise (when observed from above). [@ganis_new_2015]
+
+<a href="http://openpsychologydata.metajnl.com/articles/10.5334/jopd.ai/#"><img src="images/Fig01_web.jpg" alt="stimulus" height="400" width="230"></a>
+
+Each participant completed 96 trials, and reaction time was also recorded on each trial. We also have the participants' age and gender in a separate data file. The authors removed some trials as outliers, but here we include everything so we have more data to plot.
+
+## Importing data
+
+The data files are in `toolbox/plotting/Behavioural_data/` as separate Excel spreadsheets for each participant. I've used the function below to combine all the participant-specific files into one master data file, which is also in the data folder. This function is a little bit complicated because the Excel files aren't simple to work with, and some data was left out of the spreadsheets (subject numbers.) You can investigate the code below, or simply move on to loading the master data file.
+
+```{r source_batch, eval = F}
+library(xlsx)
+batch_read <- function(path, extension){
+    fnames <- list.files(path, pattern = extension)
+    fnames <- fnames[fnames != "demographics.xlsx"]
+    dl <- lapply(paste0(path, fnames), 
+                 read.xlsx,
+                 sheetIndex = 1,
+                 colIndex = 1:7,
+                 colClasses = c("integer", "character", "integer",
+                         "character", "character", "integer", "integer"),
+                 stringsAsFactors = F,
+                 startRow = 4,
+                 endRow = 100,
+                 header = T)
+    d <- bind_rows(dl)
+    # Create IDs from filename: Always include data in the file, not filename
+    d$Subject <- rep(fnames, each = 96)
+    d$Subject <- as.integer(unlist(regmatches(d$Subject, gregexpr('[0-9]+', d$Subject))))
+    d
+}
+d <- batch_read("Behavioural_data/", ".xlsx")
+write_csv(d, "Behavioural_data/master.csv")
+```
+
+I'll read the combined data file and demographic information file into two separate objects. I'm using `read_csv()` instead of `read.csv()` because the resulting object is prettier when printed out in the console. Similarly, I'll convert the demographic data into a `data_frame` from the original `data.frame`:
+
+```{r}
+d <- read_csv("Behavioural_data/master.csv")  # Data
+dem <- read.xlsx("Behavioural_data/demographics.xlsx", 
+                 sheetIndex = 1, stringsAsFactors = F)  # Demographics
+dem <- as_data_frame(dem)
+```
+
+## Manipulating data
+
+When writing code, I always forget whether my variable names are in Upper Case or lower case, or whether words are combined with.dots or with_underscores. To avoid confusion, I'll change the variable names to lower case, and clean up the names a bit
+
+```{r}
+names(d) <- tolower(names(d))
+names(dem) <- tolower(names(dem))
+names(d)[7] <- "accuracy"  # correct.incorrect
+```
+
+Now that the data is imported and sufficiently clean, we'll begin with a quick visual investigation of the data using base-R graphics. After this initial investigation, we'll create advanced graphics with the ggplot2 package [@wickham_ggplot2:_2009].
+
+# Base-R plots {.tabset}
+
+## Histogram of reaction time
+
+```{r, fig.cap="Reaction time histogram."}
+hist(d$time)
+```
+
+## Reaction times for angles
+
+```{r, fig.cap = "Reaction times for different angular rotations."}
+boxplot(d$time ~ d$angle)
+```
+
+## Histogram of age
+
+```{r, fig.cap = "Histogram of age with options."}
+hist(dem$age, 
+     breaks = 6,
+     labels = T,
+     main = "Age distribution of participants",
+     xlab = "Age",
+     ylim = c(0, 25),
+     col = "grey70")
+```
+
+Here I've changed a few of the various options to `hist()`, by manually specifying the number of breaks in the histogram, adding labels (numbers on top of each bar), some text, and changing the y-axis limits, and colors. By the way, the `breaks` option does not apply exactly the number of breaks that you've specified, but instead R's best guess of "pretty" values near to the number you've specified.
+
+## Barplot of gender
+
+```{r, results = "hold", fig.show = "hold", fig.cap = "Counts of females and males."}
+table(dem$gender)
+barplot(table(dem$gender))
+```
+
+Because gender is (in this data set) a dichotomous variable, an effective way to display this information is with a histogram, but instead of a continuous X-axis value, there are now two categorical bins. In order to create this plot, we need to first compute the summary statistic that is to be plotted, that is the count of observations in each category. The quickest way to do this is to use `table()`, and pass the resulting counts to `barplots()`
+
+# Advanced plots with ggplot2 
+
+To create more advanced graphics, we'll switch to using the ggplot2 package
+
+```{r}
+d <- right_join(dem, d)
+smeans <- group_by(d, subject) %>%
+    summarize(age = unique(age),
+              rt = mean(time, na.rm = T),
+              pcorr = mean(accuracy))
+smeans
+```
+
+## Boxplot
+
+```{r}
+boxplot(dem$age ~ dem$gender)
+```
+
+## Scatterplot
+
+```{r}
+plot(smeans$age, smeans$rt)
+```
+
+# Further reading
+
+Online tutorials:
+
+* <http://seananderson.ca/ggplot2-FISH554/>
+* <http://zevross.com/blog/2014/08/04/beautiful-plotting-in-r-a-ggplot2-cheatsheet-3/>
+* [Data processing workflow](http://zevross.com/blog/2015/01/13/a-new-data-processing-workflow-for-r-dplyr-magrittr-tidyr-ggplot2/)
+* [Quick-R](http://www.statmethods.net/): [Basic](http://www.statmethods.net/graphs/index.html) and [advanced](http://www.statmethods.net/advgraphs/index.html) graphics
+
+Books:
+
+* Graphical Data Analysis with R [@unwin_graphical_2015]

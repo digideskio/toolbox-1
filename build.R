@@ -4,8 +4,8 @@ library(rmarkdown)
 render("index.Rmd")
 
 # Hacky way to apply yaml and navbar to subpages
-dirs = c("introduction", "rrstudio", "import", "questionnaire")
-for (d in dirs) {
+dirs = c("introduction", "rrstudio", "import", "questionnaire", "plotting")
+for (d in dirs[5]) {
     dpath <- paste0(d, "/")
     # Create aux files in subfolders
     file.copy("_output.yaml", dpath, overwrite = T)
