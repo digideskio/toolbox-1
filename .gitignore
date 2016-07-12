@@ -1,3 +1,4 @@
 # Ignore knitr build files
 *_files/
 *_cache/
+.Rproj.user
