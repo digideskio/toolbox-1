@@ -2,14 +2,6 @@
 title: "The Psychologist's data toolbox 2.0"
 author: "Matti Vuorre"
 date: "`r Sys.Date()`"
-output: 
-  html_document:
-    toc: false
-    toc_float: false
-    code_folding: none
-    includes:
-      # in_header: common/index_head.html
-      after_body: common/foot.html
 bibliography: common/bibliography.bib
 csl: common/apa.csl
 ---

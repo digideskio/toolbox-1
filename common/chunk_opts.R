@@ -5,7 +5,6 @@ library(countrycode)
 library(readr)
 library(dplyr)
 library(ggplot2)
-library(ggthemes)
 library(reshape2)
 opts_chunk$set(fig.retina = 2,
                fig.align = 'center',

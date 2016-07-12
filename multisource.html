@@ -13,7 +13,7 @@
 
 <meta name="date" content="2016-07-12" />
 
-<title>Importing data to R</title>
+<title>Multiple source files</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
@@ -399,7 +399,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Importing data to R</h1>
+<h1 class="title toc-ignore">Multiple source files</h1>
 <h4 class="author"><em>Matti Vuorre</em></h4>
 <h4 class="date"><em>2016-07-12</em></h4>
 
@@ -408,205 +408,26 @@ div.tocify {
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In SPSS or Excel, importing data is fairly self-explanatory: The user clicks through various menu items to locate the relevant data file in the computer’s hard drive, and opens the file. In R, the analoguous operation is to <em>import data to the environment</em> (the environment is just an abstract collection of objects that R has access to.) Here, we’ll locate data on the hard drive using RStudio’s file dialogue, import the file to the workspace, and print its content’s in the console. After learning how to work with a single source data file, we’ll cover how to import multiple source data files to R and combine them into a single object.</p>
+<p>In this project, we’ll learn to work with multiple source data files. We’ll be using the same data as in the <a href="../questionnaire/questionnaire.html">questionnaire data project</a>, but this time begin with many files, instead of a single master spreadsheet. For beginners, I recommend first investigating the questionnaire data project.</p>
+<p>Great info here: <a href="http://r4ds.had.co.nz/import.html" class="uri">http://r4ds.had.co.nz/import.html</a></p>
 </div>
-<div id="single-source-data-file" class="section level1">
-<h1>Single source data file</h1>
-<p>This example data is a file downloaded from <a href="http://personality-testing.info/_rawdata/" class="uri">http://personality-testing.info/_rawdata/</a>, and contains answers to the <a href="http://personality-testing.info/tests/NPAS/">Nerdy Personality Attributes Scale</a>, along with some demographic variables. I have removed some variables from the file that are not relevant for the present purposes.</p>
-<div id="locating-the-data-file" class="section level2">
-<h2>Locating the data file</h2>
-<p>If you have downloaded the toolbox materials, the relevant folder for this tutorial is <code>/toolbox/</code>. So, we can fire up RStudio and navigate to the folder using RStudio’s file navigator, and set it as the working directory:</p>
-<p><img src="images/browse.gif" alt="Browse to location gif"></p>
-<p>The data file is in <code>/toolbox/data/nerdy/</code> and is called <code>NPAS-data.csv</code>. The <code>.csv</code> extension means that the data are in a Comma Separated Values format, which is a common format for data; any Excel spreadsheet, for example, can be exported as a <code>.csv</code>, and both Excel and SPSS can open <code>.csv</code> files. There is also a <code>codebook.txt</code> file, detailing what the various variables in the <code>.csv</code> file mean.</p>
-<p><img src="images/files.png" alt="Contents of /data/"></p>
-<p>It’s important to recognize that R only looks for external files in the current working directory. You can see the current working directory on top of the R console, or print it in the console by typing <code>getwd()</code> and pressing <code>return</code>:</p>
-<p><img src="images/cwd.png" alt="cwd" width="400"></p>
-<p>Your working directory will be slightly different, because the default printout includes the username and other preceding folders.</p>
+<div id="project-organization" class="section level1">
+<h1>Project organization</h1>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">toolbox</span>
+<span class="kw">|--</span> multisource.Rmd  <span class="co"># This file!</span>
+<span class="kw">|--</span> data
+<span class="kw">|</span>   <span class="kw">|--</span> big5
+<span class="kw">|</span>       <span class="kw">|--</span> countries
+<span class="kw">|</span>           <span class="kw">|--</span> (nu.csv
+<span class="kw">|</span>           <span class="kw">|--</span> A1.csv
+<span class="kw">|</span>           <span class="kw">|--</span> ...
+<span class="kw">|</span>           <span class="kw">|--</span> ZW.csv
+<span class="kw">|</span>   <span class="kw">|--</span> output</code></pre></div>
 </div>
-<div id="importing-the-data-file" class="section level2">
-<h2>Importing the data file</h2>
-<p>Now that we know the location and name of the data file, and the current working directory, we can ask R to read the <code>.csv</code> file from the <code>data/</code> folder by using the relative path to the file. To read files to the R environment, we need a function that does just that: <code>read.csv()</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/nerdy/NPAS-data.csv&quot;</span>)</code></pre></div>
-<p>The above function, <code>read.csv()</code> takes multiple arguments, but for the present purposes we only passed the location and name of the file to it, as a text string, and save the function call to <code>d</code>. <code>d</code> now contains the contents of the <code>.csv</code> in a format that R understands, namely, it is a <code>data.frame</code>.</p>
-<p>Why did we write <code>read.csv(&quot;data/nerdy/NPAS-data.csv&quot;)</code> instead of <code>read.csv(data/nerdy/NPAS-data.csv)</code>? Enclosing a string of text into quotation marks in R means that you are referring to a <em>string</em> of text, which is appropriate in this case. If you leave out the quotation marks, R thinks that you are talking about an object, which is not found in the R environment.</p>
-<p>As a result of executing <code>d &lt;- read.csv(&quot;data/nerdy/NPAS-data.csv&quot;)</code>, there is now an <em>object</em> in the R environment, called <code>d</code>:</p>
-<p><img src="images/workspace.png" alt="workspace"></p>
-</div>
-<div id="show-me-the-data" class="section level2">
-<h2>Show me the data</h2>
-<p>Now that <code>d</code> is in the R environment, we can look at it in various ways. If you click on the little blue arrow next to <code>d</code> in the Environment pane, you’ll get a quick overview of what <code>d</code> contains:</p>
-<p><img src="images/show-d.gif" alt="show-d"></p>
-<p>First, you’ll see that there are 1418 observations (rows) and 4 variables (columns). Clicking the arrow reveals the names, types, and first 10 values of each of these columns. Clicking on <code>d</code> itself (in the Environment pane) opens up the data viewer, which is very useful for looking at the data in a format familiar from SPSS and Excel:</p>
-<p><img src="images/viewer.png" alt="viewer"></p>
-<p>This view reveals more of the actual values of the variables, and you can scroll up and down to inspect the entire <code>data.frame</code>.</p>
-<p>Finally, we’ll view the data within the R console, by typing a few simple commands. There are two very useful functions to quickly look at the data: <code>str()</code> and <code>head()</code>. <code>str()</code> prints out the structure of the <code>data.frame</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(d)</code></pre></div>
-<pre><code>## &#39;data.frame&#39;:    1445 obs. of  79 variables:
-##  $ Q1               : int  3 4 5 5 4 4 5 5 5 4 ...
-##  $ Q2               : int  5 4 5 5 4 4 3 3 5 5 ...
-##  $ Q3               : int  3 4 5 5 4 4 4 4 5 5 ...
-##  $ Q4               : int  3 3 5 5 4 4 3 5 4 5 ...
-##  $ Q5               : int  5 5 5 5 4 4 5 5 2 4 ...
-##  $ Q6               : int  5 2 5 5 4 4 4 3 3 3 ...
-##  $ Q7               : int  5 5 5 5 4 5 4 3 0 5 ...
-##  $ Q8               : int  3 1 5 3 4 3 5 5 5 4 ...
-##  $ Q9               : int  5 4 5 5 4 3 5 3 4 4 ...
-##  $ Q10              : int  5 4 5 5 5 4 5 5 4 5 ...
-##  $ Q11              : int  4 1 5 5 4 4 3 4 4 1 ...
-##  $ Q12              : int  5 5 4 5 4 4 3 4 4 4 ...
-##  $ Q13              : int  5 4 5 4 5 3 4 3 5 4 ...
-##  $ Q14              : int  5 4 5 4 5 5 4 5 3 5 ...
-##  $ Q15              : int  3 1 4 4 1 3 1 3 5 5 ...
-##  $ Q16              : int  5 3 5 2 1 4 1 5 4 4 ...
-##  $ Q17              : int  4 3 5 5 5 3 3 4 5 5 ...
-##  $ Q18              : int  5 3 4 5 5 4 1 4 5 5 ...
-##  $ Q19              : int  5 1 5 5 3 5 3 3 4 2 ...
-##  $ Q20              : int  5 3 5 5 5 4 1 3 3 5 ...
-##  $ Q21              : int  5 3 5 4 5 4 5 4 5 2 ...
-##  $ Q22              : int  5 3 5 1 4 2 1 4 2 3 ...
-##  $ Q23              : int  5 4 5 5 4 5 4 3 5 5 ...
-##  $ Q24              : int  5 4 5 5 5 5 5 5 4 5 ...
-##  $ Q25              : int  5 4 3 5 4 3 3 2 2 2 ...
-##  $ Q26              : int  5 5 5 5 0 4 5 5 3 5 ...
-##  $ introelapse      : int  41 13 2 26 6 410 7 418 37 144 ...
-##  $ testelapse       : int  93 131 49 710 195 117 107 64 114 112 ...
-##  $ surveyelapse     : int  125 161 87 228 424 113 145 97 568 128 ...
-##  $ TIPI1            : int  1 5 1 7 2 2 3 3 1 5 ...
-##  $ TIPI2            : int  1 3 6 2 5 3 1 6 1 6 ...
-##  $ TIPI3            : int  7 5 3 7 4 5 2 5 5 3 ...
-##  $ TIPI4            : int  1 4 7 4 3 5 1 7 5 6 ...
-##  $ TIPI5            : int  6 5 6 7 7 5 7 6 5 6 ...
-##  $ TIPI6            : int  7 5 7 2 6 5 5 5 7 7 ...
-##  $ TIPI7            : int  7 5 2 6 5 4 5 6 7 4 ...
-##  $ TIPI8            : int  1 5 6 1 5 3 5 7 7 7 ...
-##  $ TIPI9            : int  7 6 2 7 6 4 6 1 3 5 ...
-##  $ TIPI10           : int  1 1 1 1 2 4 1 4 1 2 ...
-##  $ VCL1             : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL2             : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL3             : int  1 1 1 1 0 1 1 1 0 1 ...
-##  $ VCL4             : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL5             : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL6             : int  0 0 1 0 0 1 0 0 0 0 ...
-##  $ VCL7             : int  1 0 0 1 0 0 0 0 0 0 ...
-##  $ VCL8             : int  1 1 0 1 0 0 1 0 0 1 ...
-##  $ VCL9             : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ VCL10            : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL11            : int  1 1 1 1 0 0 0 0 0 1 ...
-##  $ VCL12            : int  0 0 1 0 0 1 0 0 0 0 ...
-##  $ VCL13            : int  1 1 1 1 1 1 0 1 1 1 ...
-##  $ VCL14            : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL15            : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ VCL16            : int  1 1 1 1 1 1 1 1 1 1 ...
-##  $ education        : int  3 4 3 4 1 2 2 2 3 1 ...
-##  $ urban            : int  2 2 1 3 1 3 2 2 2 2 ...
-##  $ gender           : int  2 2 2 1 2 1 1 2 2 3 ...
-##  $ engnat           : int  1 1 2 1 1 1 1 1 1 2 ...
-##  $ age              : int  69 50 22 44 17 18 18 21 25 17 ...
-##  $ screenw          : int  2520 854 1366 768 1366 1366 1280 1280 1440 1366 ...
-##  $ screenh          : int  1418 534 768 1024 768 768 720 800 900 768 ...
-##  $ hand             : int  1 1 1 1 1 1 2 1 1 1 ...
-##  $ religion         : int  6 1 1 2 7 1 1 12 7 1 ...
-##  $ orientation      : int  1 1 2 1 4 2 1 5 1 2 ...
-##  $ voted            : int  1 1 1 2 2 2 2 1 2 2 ...
-##  $ married          : int  3 1 1 3 1 1 1 1 1 1 ...
-##  $ familysize       : int  4 3 2 4 1 3 2 3 4 3 ...
-##  $ major            : Factor w/ 404 levels &quot;&quot;,&quot; None yet&quot;,..: 395 79 70 288 1 220 1 1 363 1 ...
-##  $ race.AF8.arab    : Factor w/ 28 levels &quot;&quot;,&quot; anthropology&quot;,..: 27 27 27 27 27 27 27 27 27 27 ...
-##  $ race.AF8.asian   : Factor w/ 12 levels &quot;&quot;,&quot; art&quot;,&quot; bachelors in +ACI-&quot;,..: 11 11 11 11 11 11 11 11 11 11 ...
-##  $ race.AF8.black   : Factor w/ 4 levels &quot;&quot;,&quot; computer scien+ACI-&quot;,..: 3 3 3 3 3 3 4 3 4 3 ...
-##  $ race.AF8.white   : int  1 1 1 1 1 1 0 1 0 0 ...
-##  $ race.AF8.hispanic: int  0 0 0 0 0 0 0 0 0 1 ...
-##  $ race.AF8.nativeam: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ race.AF8.nativeau: int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ race.AF8.other   : int  0 0 0 0 0 0 0 0 0 0 ...
-##  $ nerdy            : int  7 6 7 7 6 5 6 5 7 7 ...
-##  $ ASD              : int  2 2 2 2 2 2 2 2 2 2 ...</code></pre>
-<p>And <code>head()</code> shows the first six rows of the <code>data.frame</code>:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(d)</code></pre></div>
-<pre><code>##   Q1 Q2 Q3 Q4 Q5 Q6 Q7 Q8 Q9 Q10 Q11 Q12 Q13 Q14 Q15 Q16 Q17 Q18 Q19 Q20
-## 1  3  5  3  3  5  5  5  3  5   5   4   5   5   5   3   5   4   5   5   5
-## 2  4  4  4  3  5  2  5  1  4   4   1   5   4   4   1   3   3   3   1   3
-## 3  5  5  5  5  5  5  5  5  5   5   5   4   5   5   4   5   5   4   5   5
-## 4  5  5  5  5  5  5  5  3  5   5   5   5   4   4   4   2   5   5   5   5
-## 5  4  4  4  4  4  4  4  4  4   5   4   4   5   5   1   1   5   5   3   5
-## 6  4  4  4  4  4  4  5  3  3   4   4   4   3   5   3   4   3   4   5   4
-##   Q21 Q22 Q23 Q24 Q25 Q26 introelapse testelapse surveyelapse TIPI1 TIPI2
-## 1   5   5   5   5   5   5          41         93          125     1     1
-## 2   3   3   4   4   4   5          13        131          161     5     3
-## 3   5   5   5   5   3   5           2         49           87     1     6
-## 4   4   1   5   5   5   5          26        710          228     7     2
-## 5   5   4   4   5   4   0           6        195          424     2     5
-## 6   4   2   5   5   3   4         410        117          113     2     3
-##   TIPI3 TIPI4 TIPI5 TIPI6 TIPI7 TIPI8 TIPI9 TIPI10 VCL1 VCL2 VCL3 VCL4
-## 1     7     1     6     7     7     1     7      1    1    1    1    1
-## 2     5     4     5     5     5     5     6      1    1    1    1    1
-## 3     3     7     6     7     2     6     2      1    1    1    1    1
-## 4     7     4     7     2     6     1     7      1    1    1    1    1
-## 5     4     3     7     6     5     5     6      2    1    1    0    1
-## 6     5     5     5     5     4     3     4      4    1    1    1    1
-##   VCL5 VCL6 VCL7 VCL8 VCL9 VCL10 VCL11 VCL12 VCL13 VCL14 VCL15 VCL16
-## 1    1    0    1    1    0     1     1     0     1     1     1     1
-## 2    1    0    0    1    0     1     1     0     1     1     1     1
-## 3    1    1    0    0    0     1     1     1     1     1     1     1
-## 4    1    0    1    1    0     1     1     0     1     1     1     1
-## 5    1    0    0    0    0     1     0     0     1     1     1     1
-## 6    1    1    0    0    0     1     0     1     1     1     1     1
-##   education urban gender engnat age screenw screenh hand religion
-## 1         3     2      2      1  69    2520    1418    1        6
-## 2         4     2      2      1  50     854     534    1        1
-## 3         3     1      2      2  22    1366     768    1        1
-## 4         4     3      1      1  44     768    1024    1        2
-## 5         1     1      2      1  17    1366     768    1        7
-## 6         2     3      1      1  18    1366     768    1        1
-##   orientation voted married familysize       major race.AF8.arab
-## 1           1     1       3          4  Studio Art             0
-## 2           1     1       1          3  biophysics             0
-## 3           2     1       1          2     biology             0
-## 4           1     2       3          4 Mathematics             0
-## 5           4     2       1          1                         0
-## 6           2     2       1          3     Geology             0
-##   race.AF8.asian race.AF8.black race.AF8.white race.AF8.hispanic
-## 1              0              0              1                 0
-## 2              0              0              1                 0
-## 3              0              0              1                 0
-## 4              0              0              1                 0
-## 5              0              0              1                 0
-## 6              0              0              1                 0
-##   race.AF8.nativeam race.AF8.nativeau race.AF8.other nerdy ASD
-## 1                 0                 0              0     7   2
-## 2                 0                 0              0     6   2
-## 3                 0                 0              0     7   2
-## 4                 0                 0              0     7   2
-## 5                 0                 0              0     6   2
-## 6                 0                 0              0     5   2</code></pre>
-<p>You could also print out the entire contents of the <code>data.frame</code>, but 1418 rows would result in an information overflow, so I won’t show the results of doing that. You can try it by typing <code>d</code> in the console, and hitting <code>return</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d</code></pre></div>
-<p><small><code>results not shown</code></small></p>
-</div>
-<div id="figure" class="section level2">
-<h2>Figure</h2>
-<p>Usually, the best way to investigate data is by looking at figures. I’ll draw one here, but won’t reveal the code quite yet, as plotting is covered in later tutorials. By following through the toolbox tutorials, you’ll be able to draw similar plots in no time!</p>
-<div class="figure" style="text-align: center">
-<img src="import_files/figure-html/unnamed-chunk-1-1.png" alt="Mean nerdiness (±1 SEM) for most common majors." width="768" />
-<p class="caption">
-Mean nerdiness (±1 SEM) for most common majors.
-</p>
-</div>
-<p>Psychology, highlighted in red, sits comfortably in the middle. Of interest is also the fact that people who reported their major as “<em>math</em>” instead of <em>mathematics</em> reported lower nerdiness scores, although they have the same major.</p>
-<p>Now that we’ve covered working with a single source data file, we’ll move on to multiple source data files.</p>
-</div>
-</div>
-<div id="multiple-source-files" class="section level1">
-<h1>Multiple source files</h1>
-<p>In psychology, it is common to have multiple source data files that need to be combined for statistical analyses. For example, an experiment might produce a data file for each participant: In this case, the shape of the data is always the same (same variables collected on every participant, and possibly an equal amount of observations [rows]). Another example is a multi-site project, where, for example, multiple investigators collected personality questionnaires in various countries. Again, these files need to be combined for analyzing each country’s data together. I’ll use this latter case as an example.</p>
-<p>In this example, we’ll learn to work with multiple source data files using the same data as in the <a href="questionnaire.html">questionnaire data project</a>. These data are responses to the Big Five personality questionnaire from over 100 countries, and are freely available <a href="http://personality-testing.info/_rawdata/">here</a> (open data wins again!).</p>
-<div id="show-your-work" class="section level2">
-<h2>Show your work</h2>
-<p>In order to analyse all the data in R (or any other program), the files need to be combined into one object within the programming environment. Additionally, we can create a shortcut for later analyses by saving this “master” data object into a file. However, it is crucial that you don’t just save this new master file, but also the first step in the data analytic pipeline: The merging of multiple source files. After all, it is possible that we commit an error at this stage, and if we haven’t detailed what happened at this stage, we will not know what that error was, or how it influenced the data we analysed. Therefore, I generally recommend only saving the R script that produces master data frames from raw data, not the resulting master data file. If the merging step takes a long time (and it won’t if you have fewer than a million observations), then you may also save the master data file, and load it on subsequent analyses of data instead of running the merging script every time. In any case, the merging script <strong>must</strong> be saved as well. This constitutes the first note on the paper trail we leave for future investigators, including your future self. Now that we’re motivated to begin a reproducible workflow, let’s locate the files.</p>
-</div>
-<div id="locating-the-files" class="section level2">
-<h2>Locating the files</h2>
-<p>The raw data downloaded from the <a href="http://personality-testing.info/_rawdata/BIG5.zip">website</a> is a neat and simple spreadsheet, but for our purposes, I’ve split the data into separate files by country. To look at the source files, we use the <code>list.files()</code> function that simply takes a path as input, and shows what’s in that path. These data are located in <code>data/countries/</code>.</p>
+<div id="accessing-source-files" class="section level1">
+<h1>Accessing source files</h1>
+<p>Before we can access the data in RStudio, we need to set the working directory. Do <strong>not</strong> set working directories in your script, because these calls make others with different root folder structures (usernames, systems, etc.) unable to run your script without changing these arguments. Instead, you can simply click the Set As Working Directory button in RStudio as described <a href="http://mvuorre.github.io/toolbox/rrstudio/rrstudio.html#Get_started_with_RStudio">here</a>.</p>
+<p>The raw data downloaded from the <a href="http://personality-testing.info/_rawdata/BIG5.zip">website</a> is a neat and simple spreadsheet of data, but for our purposes, I’ve split the data into separate files by country. To look at our source files, we use the <code>list.files()</code> function that simply takes a path as input, and shows what’s in that path.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">file_path &lt;-<span class="st"> &quot;data/big5/countries/&quot;</span>
 <span class="kw">list.files</span>(file_path)</code></pre></div>
 <pre><code>##   [1] &quot;AE.csv&quot; &quot;AG.csv&quot; &quot;AL.csv&quot; &quot;AO.csv&quot; &quot;AP.csv&quot; &quot;AR.csv&quot; &quot;AS.csv&quot;
@@ -633,16 +454,16 @@ Mean nerdiness (±1 SEM) for most common majors.
 ## [148] &quot;UZ.csv&quot; &quot;VC.csv&quot; &quot;VE.csv&quot; &quot;VI.csv&quot; &quot;VN.csv&quot; &quot;ZA.csv&quot; &quot;ZM.csv&quot;
 ## [155] &quot;ZW.csv&quot;</code></pre>
 <p>We would certainly like to avoid manually copying and pasting these files into one master file in Excel. Fortunately, programming allows us to <a href="https://en.wikipedia.org/wiki/Don&#39;t_repeat_yourself">DRY</a>, and we can load and merge these data with a few lines of code.</p>
-<p>Before we begin, make sure that your working directory is set: It should be the <code>toolbox/</code> folder:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">getwd</span>()</code></pre></div>
-<pre><code>## [1] &quot;/Users/Matti/Dropbox/academic/toolbox&quot;</code></pre>
-<p>If this is not correct, use the file navigator in RStudio and click on “Set as working directory” when you are in this folder (note that the folders preceding <code>/toolbox/</code> are different on your computer).</p>
 </div>
+<div id="combine-multiple-source-files" class="section level1">
+<h1>Combine multiple source files</h1>
+<p>We have a folder with a bunch of .csv files that should all be included in our main investigation. It is helpful, then, to combine the multiple files into one object that we can then wrangle in R. Additionally, we can create a shortcut for later analyses by saving this “master” data object into a “master” file. However, it is crucial that you don’t just save this new master file, but also the first step in the data analytic pipeline: The merging of multiple source files. After all, it is possible that we commit an error at this stage, and if the stage, that is the R script, isn’t saved, we will not know what that error was, or how it influenced the data we analysed. Therefore, I generally recommend only saving the R script that produces master data frames from raw data, not the resulting master data frame. If the merging step takes a long time (and it won’t if you have fewer than a million observations), then you may also save the master data file, and load it on subsequent analyses of data instead of running the merging script every time. In any case, the merging script <strong>must</strong> be saved as well. This constitutes the first note on the paper trail we leave for future investigators, including your future self.</p>
+<p>All the country-specific source data files are identical to each other in terms of the columns they contain: <em>their <strong>shapes</strong> are identical</em>. This would also be the case for experimental data, and in many other cases, but sometimes raw data isn’t as clean as we have it here. However, for our first experience with multiple source data files, we face the easier task of combining multiple files that have the same shape.</p>
 <div id="merging-two-data-files" class="section level2">
 <h2>Merging two data files</h2>
-<p>The first step is to investigate what the shape of the data is, so let’s read and investigate a single source file, the Big Five questionnaire responses from Papua New Guinea. Above, when dealing with a single source file, we used <code>read.csv()</code> to import .csv files into R. But here I will use another function, from the <strong>readr</strong> package <span class="citation">(Wickham &amp; Francois, 2015b)</span>, because it will prove to be more flaxible later on. Using it is equally easy (but make sure it is <a href="rrstudio.html">installed</a>.)</p>
+<p>The first step is to investigate what this shape actually is, so let’s read and investigate a single source file, the Big Five questionnaire data from Papua New Guinea:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(readr)  <span class="co"># For enhanced data file reading functions</span>
-pg &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/big5/countries/PG.csv&quot;</span>)
+pg &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">paste0</span>(file_path, <span class="st">&quot;PG.csv&quot;</span>))
 pg</code></pre></div>
 <pre><code>## Source: local data frame [2 x 57]
 ## 
@@ -658,7 +479,7 @@ pg</code></pre></div>
 ##   &lt;int&gt;, C9 &lt;int&gt;, C10 &lt;int&gt;, O1 &lt;int&gt;, O2 &lt;int&gt;, O3 &lt;int&gt;, O4 &lt;int&gt;, O5
 ##   &lt;int&gt;, O6 &lt;int&gt;, O7 &lt;int&gt;, O8 &lt;int&gt;, O9 &lt;int&gt;, O10 &lt;int&gt;.</code></pre>
 <p>To learn about what I called the <strong>shape</strong> of the data, we need to know its dimensions. These are listed on top of the displayed output, above. The object <code>pg</code> is a data frame with 2 rows and 57 columns. Each row is an observation, and each column is a variable. The easiest merging operation would be to add more rows to this data from a data frame that has the same columns, such as the data collected in Guatemala:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">( gt &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/big5/countries/GT.csv&quot;</span>) )</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">( gt &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">paste0</span>(file_path, <span class="st">&quot;GT.csv&quot;</span>)) )</code></pre></div>
 <pre><code>## Source: local data frame [3 x 57]
 ## 
 ##    race   age engnat gender  hand source country    E1    E2    E3    E4
@@ -674,14 +495,16 @@ pg</code></pre></div>
 ##   &lt;int&gt;, C9 &lt;int&gt;, C10 &lt;int&gt;, O1 &lt;int&gt;, O2 &lt;int&gt;, O3 &lt;int&gt;, O4 &lt;int&gt;, O5
 ##   &lt;int&gt;, O6 &lt;int&gt;, O7 &lt;int&gt;, O8 &lt;int&gt;, O9 &lt;int&gt;, O10 &lt;int&gt;.</code></pre>
 <p>Note how I enclosed the line of code in parentheses. By doing so, I asked R to evaluate the code <em>and</em> print out the resulting object. Neat.</p>
-<p>This data frame also has 57 columns, and both data sets are two-dimensional<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. To merge these data sets, we simply need to bind them by row. But before we merge data frames, we need to be sure that the columns mean the same thing in both. One way to do this is to inspect the names of the columns, and make sure that they match up. The <code>names()</code> function returns the column names of the data frame, and we can compare the names of two data frames by comparing them with the logical <code>==</code> (equals) operator:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(pg) ==<span class="st"> </span><span class="kw">names</span>(gt)</code></pre></div>
+<p>This data frame also has 57 columns, and both data sets are two-dimensional<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. To merge these data sets, we simply need to bind them by row. But before we merge data frames, we need to be sure that the columns mean the same thing in both. One way to do this is to inspect the names of the columns, and make sure that they match up:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pg_names &lt;-<span class="st"> </span><span class="kw">names</span>(pg)
+gt_names &lt;-<span class="st"> </span><span class="kw">names</span>(gt)
+pg_names ==<span class="st"> </span>gt_names</code></pre></div>
 <pre><code>##  [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 ## [15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 ## [29] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 ## [43] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 ## [57] TRUE</code></pre>
-<p>The equality between each column name in <code>pg</code> and <code>gt</code> is <code>TRUE</code>. This is machine language for: “Stuff’s the same.” We can therefore proceed and bind the data frames by row. For this task, Rs built-in <code>rbind()</code> is the right tool:</p>
+<p>The equality of each column name in <code>pg</code> and <code>gt</code> is <code>TRUE</code>. This is machine language for: “Stuff’s the same.” We can therefore proceed and bind the data frames by row. For very simple tasks, Rs built-in <code>rbind()</code> is the right tool:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rbind</span>(pg, gt)</code></pre></div>
 <pre><code>## Source: local data frame [5 x 57]
 ## 
@@ -699,7 +522,7 @@ pg</code></pre></div>
 ##   &lt;int&gt;, C2 &lt;int&gt;, C3 &lt;int&gt;, C4 &lt;int&gt;, C5 &lt;int&gt;, C6 &lt;int&gt;, C7 &lt;int&gt;, C8
 ##   &lt;int&gt;, C9 &lt;int&gt;, C10 &lt;int&gt;, O1 &lt;int&gt;, O2 &lt;int&gt;, O3 &lt;int&gt;, O4 &lt;int&gt;, O5
 ##   &lt;int&gt;, O6 &lt;int&gt;, O7 &lt;int&gt;, O8 &lt;int&gt;, O9 &lt;int&gt;, O10 &lt;int&gt;.</code></pre>
-<p>Job done! Kind of… Although <code>rbind()</code> does its job well, we instead turn to another gem from the <strong>dplyr</strong> package <span class="citation">(Wickham &amp; Francois, 2015a)</span>: <code>bind_rows()</code>. This function allows us to do more complex operations, such as joining <em>lists</em> of data frames, without extra complications, and is therefore preferred:</p>
+<p>Job done! Kind of… Although <code>rbind()</code> does its job well, we instead turn to another gem from the <code>dplyr</code> package <span class="citation">(Wickham &amp; Francois, 2015)</span>: <code>bind_rows()</code>. This function allows us to do more complex operations, such as joining <em>lists</em> of data frames, without extra complications, and is therefore preferred:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(pg_and_gt &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(pg, gt))</code></pre></div>
 <pre><code>## Source: local data frame [5 x 57]
 ## 
@@ -717,7 +540,7 @@ pg</code></pre></div>
 ##   &lt;int&gt;, C2 &lt;int&gt;, C3 &lt;int&gt;, C4 &lt;int&gt;, C5 &lt;int&gt;, C6 &lt;int&gt;, C7 &lt;int&gt;, C8
 ##   &lt;int&gt;, C9 &lt;int&gt;, C10 &lt;int&gt;, O1 &lt;int&gt;, O2 &lt;int&gt;, O3 &lt;int&gt;, O4 &lt;int&gt;, O5
 ##   &lt;int&gt;, O6 &lt;int&gt;, O7 &lt;int&gt;, O8 &lt;int&gt;, O9 &lt;int&gt;, O10 &lt;int&gt;.</code></pre>
-<p>Great! Although we were able to efficiently combine two source data files with this procedure, many projects, such as this one, can have hundreds of source data files, and we wouldn’t want to write out <code>read_csv(&quot;XX.csv&quot;)</code> for each of the files separately. Therefore we’ll <em>write a function</em> that reads an arbitrary number of data files into a single object!</p>
+<p>Great! Although we were able to efficiently combine two source data files with this procedure, many projects, such as this one, can have hundreds of source data files, and we wouldn’t want to write out <code>read_csv(paste0(file_path, &quot;PG.csv&quot;))</code> for each of the files separately. Therefore we’ll <em>write a function</em> that reads an arbitrary number of data files into a single object!</p>
 </div>
 <div id="merging-more-than-two-data-files" class="section level2">
 <h2>Merging more than two data files</h2>
@@ -733,7 +556,7 @@ pg</code></pre></div>
 ##   data_frame 
 ##   }</code></pre>
 <p>Perhaps you can intuit that this function executes all the steps we already did above, but instead of merging two files, the function can merge a whole list of files! The printout above describes <code>batch_read()</code> as a <em>function</em> that takes two arguments: <code>path</code> and <code>extension</code>. When this function is executed, it first lists files in <code>path</code> whose filename include <code>extension</code>. This is extremely helpful, because the function now only reads files that have our pre-specified extension, and ignores all other file types. This list of file names is saved to <code>file_names</code>.</p>
-<p>The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with <a href="questionnaire.html">nesting functions vs. piping functions</a>). The innermost function <code>paste0()</code> concatenates multiple text strings together, without spaces (hence <code>paste0</code> instead of <code>paste</code>):</p>
+<p>The second line is a little more complicated, but not much! (One reason it looks more complicated than it is has to do with <a href="../questionnaire/questionnaire.html#The_pipe">nesting functions vs. piping functions</a>). The innermost function <code>paste0</code> concatenates multiple text strings together, without spaces (hence <code>paste0</code> instead of <code>paste</code>):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string1 &lt;-<span class="st"> &quot;Hello&quot;</span>
 string2 &lt;-<span class="st"> &quot;world!&quot;</span>
 <span class="kw">paste</span>(string1, string2)</code></pre></div>
@@ -741,50 +564,22 @@ string2 &lt;-<span class="st"> &quot;world!&quot;</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">paste0</span>(string1, string2)</code></pre></div>
 <pre><code>## [1] &quot;Helloworld!&quot;</code></pre>
 <p>Because <code>path</code> is a text string, and <code>file_names</code> is a list of text strings, the result is a new list of text strings. The result of <code>paste0(path, file_names)</code> is then passed to <code>lapply()</code>, which simply means <em>list apply</em>. <code>lapply()</code> takes as its first argument a list, here the list of file names. The second argument to <code>lapply()</code> is the function to apply to the list: We want to <code>read_csv()</code>. This line, therefore, <em>reads a list of csv files</em>, and saves the list into <code>data_list</code>: A list containing a whole bunch of data frames create by repeatedly applying <code>read_csv()</code> to file names in the list of names.</p>
-<p>A final step remains: The list needs to be unpacked into a data frame. Above, I alluded to how <code>bind_rows()</code> does all sorts of neat things. Well, this is just one of those things, we simply passed the list of data frames (<code>data_list</code>) to <code>bind_rows()</code>, which then created a single object (called <code>data_frame</code>). The last line of the function definition specifies what is to be returned when a user calls this function.</p>
-<p>I said before that programming is hard. You learn it by doing it. The preceding discussion is abstract and elusive and we will learn faster by implementing the function ourselves. To create this function, type the following code into your R script, and run it:</p>
+<p>A final step remains: The list needs to be unpacked into a data frame. Above, I alluded to how <code>bind_rows()</code> does all sorts of neat things. Well, this is just one of those things, we simply passed this list of data frames to <code>bind_rows()</code>, which then created a single object (called <code>data_frame</code>). The last line of the function definition specifies what is to be returned when a user calls this function.</p>
+<p>I said before that programming is hard. You learn it by doing it. The preceding discussion is abstract and elusive and we will learn faster by implementing the function ourselves: To create this function, type the following code into your R script:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">batch_read &lt;-<span class="st"> </span>function(path, extension) {
   file_names &lt;-<span class="st"> </span><span class="kw">list.files</span>(path, <span class="dt">pattern =</span> extension)
   data_list &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">paste0</span>(path, file_names), read_csv)
   data_frame &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(data_list)
   data_frame
 }</code></pre></div>
-<p>If you now look at your Environment pane in RStudio, you’ll see <code>batch_read</code> under the <strong>Functions</strong> label. You can now call this function by typing in <code>batch_read(folder_where_revolutionary_data_lives, file_extension)</code>. Brilliant!</p>
+<p>You can now call this function by typing in <code>batch_read(folder_where_revolutionary_data_lives, file_extension)</code>. Brilliant! Groundbreaking!</p>
 </div>
 <div id="read-multiple-files-with-batch_read" class="section level3">
 <h3>Read multiple files with <code>batch_read()</code></h3>
 <p>Let’s put our shiny new <code>batch_read()</code> to use and load our data. Recall that <code>file_path</code> is an object that simply contains, as a text string, the folder where the country-specific data files are: data/big5/countries/</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d &lt;-<span class="st"> </span><span class="kw">batch_read</span>(file_path, <span class="st">&quot;.csv&quot;</span>)</code></pre></div>
 <p>There! We read all the .csv files in <code>file_path</code> (data/big5/countries/). If we would like to save the new master data file as a single .csv, we could run the following code (but recall the discussion above about <em>not saving intermediate data files, but only the <em>procedure</em> that generated those data files</em>):</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write_csv</span>(d, <span class="dt">path =</span> <span class="st">&quot;data/big5/master-data.csv&quot;</span>)</code></pre></div>
-</div>
-<div id="view-combined-data" class="section level3">
-<h3>View combined data</h3>
-<p><code>d</code> now contains all the Big Five questionnaire responses, from all the data files:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">d</code></pre></div>
-<pre><code>## Source: local data frame [19,324 x 57]
-## 
-##     race   age engnat gender  hand source country    E1    E2    E3    E4
-##    &lt;int&gt; &lt;int&gt;  &lt;int&gt;  &lt;int&gt; &lt;int&gt;  &lt;int&gt;   &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
-## 1      4    16      2      1     1      1      AE     1     2     4     4
-## 2      4    17      1      1     1      5      AE     4     4     4     5
-## 3     13    15      2      2     1      1      AE     1     5     3     3
-## 4      5    19      2      2     1      1      AE     3     2     4     2
-## 5      3    53      1      2     1      1      AE     1     2     1     3
-## 6      5    31      2      1     1      5      AE     4     3     4     1
-## 7      5    32      2      2     1      1      AE     3     4     3     3
-## 8      4    32      2      2     1      1      AE     3     4     4     2
-## 9     13    33      2      2     1      1      AE     3     4     4     4
-## 10     5    19      2      1     1      1      AE     1     2     2     5
-## ..   ...   ...    ...    ...   ...    ...     ...   ...   ...   ...   ...
-## Variables not shown: E5 &lt;int&gt;, E6 &lt;int&gt;, E7 &lt;int&gt;, E8 &lt;int&gt;, E9 &lt;int&gt;, E10
-##   &lt;int&gt;, N1 &lt;int&gt;, N2 &lt;int&gt;, N3 &lt;int&gt;, N4 &lt;int&gt;, N5 &lt;int&gt;, N6 &lt;int&gt;, N7
-##   &lt;int&gt;, N8 &lt;int&gt;, N9 &lt;int&gt;, N10 &lt;int&gt;, A1 &lt;int&gt;, A2 &lt;int&gt;, A3 &lt;int&gt;, A4
-##   &lt;int&gt;, A5 &lt;int&gt;, A6 &lt;int&gt;, A7 &lt;int&gt;, A8 &lt;int&gt;, A9 &lt;int&gt;, A10 &lt;int&gt;, C1
-##   &lt;int&gt;, C2 &lt;int&gt;, C3 &lt;int&gt;, C4 &lt;int&gt;, C5 &lt;int&gt;, C6 &lt;int&gt;, C7 &lt;int&gt;, C8
-##   &lt;int&gt;, C9 &lt;int&gt;, C10 &lt;int&gt;, O1 &lt;int&gt;, O2 &lt;int&gt;, O3 &lt;int&gt;, O4 &lt;int&gt;, O5
-##   &lt;int&gt;, O6 &lt;int&gt;, O7 &lt;int&gt;, O8 &lt;int&gt;, O9 &lt;int&gt;, O10 &lt;int&gt;.</code></pre>
-<p>To get to work with this data, take a look at the <a href="questionnaire.html">questionnaire data tutorial</a>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">write_csv</span>(d, <span class="dt">path =</span> <span class="st">&quot;data/big5/data.csv&quot;</span>)</code></pre></div>
 </div>
 </div>
 </div>
@@ -811,7 +606,7 @@ d$country &lt;-<span class="st"> </span><span class="kw">countrycode</span>(<spa
 ## [17] &quot;Bahrain&quot;                         &quot;Bermuda&quot;                        
 ## [19] &quot;Brunei Darussalam&quot;               &quot;Bolivia, Plurinational State of&quot;
 ## [21] &quot;...&quot;</code></pre>
-<p>And finally, we’ll print out some arbitrary plot, and you should try to figure out what the code here does. If you are unsure about all the <code>mutate()</code>s etc. please refer back to the <a href="questionnaire.html">questionnaire data project</a>.</p>
+<p>And finally, we’ll print out some arbitrary plot, and you should try to figure out what the code here does. If you are unsure about all the <code>mutate()</code>s etc. please refer back to the <a href="../questionnaire/questionnaire.html">questionnaire data project</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(d, !<span class="kw">is.na</span>(country)) %&gt;%
 <span class="st">    </span><span class="kw">group_by</span>(country) %&gt;%
 <span class="st">    </span><span class="kw">mutate</span>(<span class="dt">N =</span> <span class="kw">n</span>()) %&gt;%
@@ -821,7 +616,7 @@ d$country &lt;-<span class="st"> </span><span class="kw">countrycode</span>(<spa
 <span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> N, <span class="dt">y =</span> country)) +
 <span class="st">    </span><span class="kw">geom_point</span>()</code></pre></div>
 <div class="figure" style="text-align: center">
-<img src="import_files/figure-html/unnamed-chunk-18-1.png" alt="TRUE" width="768" />
+<img src="multisource_files/figure-html/unnamed-chunk-15-1.png" alt="TRUE" width="768" />
 <p class="caption">
 TRUE
 </p>
@@ -829,13 +624,10 @@ TRUE
 </div>
 <div id="references" class="section level1">
 <h1>References</h1>
-<p>Great info here: <a href="http://r4ds.had.co.nz/import.html" class="uri">http://r4ds.had.co.nz/import.html</a></p>
+<p><br></p>
 <div id="refs" class="references">
 <div id="ref-wickham_dplyr:_2015">
-<p>Wickham, H., &amp; Francois, R. (2015a). <em>Dplyr: A grammar of data manipulation</em>. Retrieved from <a href="http://CRAN.R-project.org/package=dplyr" class="uri">http://CRAN.R-project.org/package=dplyr</a></p>
-</div>
-<div id="ref-wickham_readr:_2015">
-<p>Wickham, H., &amp; Francois, R. (2015b). <em>Readr: Read tabular data</em>. Retrieved from <a href="http://CRAN.R-project.org/package=readr" class="uri">http://CRAN.R-project.org/package=readr</a></p>
+<p>Wickham, H., &amp; Francois, R. (2015). <em>Dplyr: A grammar of data manipulation</em>. Retrieved from <a href="http://CRAN.R-project.org/package=dplyr" class="uri">http://CRAN.R-project.org/package=dplyr</a></p>
 </div>
 </div>
 </div>
