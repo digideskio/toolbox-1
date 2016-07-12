@@ -11,32 +11,31 @@ output:
     number_section: false
     self_contained: true
     include:
-      before_body: common/head.html
       after_body: common/foot.html
 navbar:
-  title: "Toolbox 2.0"
-  type: inverse
+  # title: "Toolbox 2.0"
+  # type: inverse
   left:
     - text: "Toolbox"
       icon: fa-home
       href: index.html
     - text: "Introduction"
       href: introduction.html
-    - text: "Importing"
-      icon: fa-gear
+    - text: "Import"
+      icon: fa-download
       menu:
         - text: "Spreadsheets"
           href: import.html
-    - text: "Wrangling"
-      icon: fa-gear
+    - text: "Wrangle"
+      icon: fa-cogs
       menu:
         - text: "Questionnaire data"
           href: questionnaire.html
-    - text: "Visualizing"
-      icon: fa-gear
+    - text: "Visualize"
+      icon: fa-area-chart
       menu:
         - text: "Intro to ggplot2"
           href: plotting.html
   right:
-    - icon: fa-question fa-lg
+    - icon: fa-github fa-lg
       href: https://github.com/mvuorre/toolbox
